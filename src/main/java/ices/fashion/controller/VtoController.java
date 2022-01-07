@@ -1,6 +1,8 @@
 package ices.fashion.controller;
 
+import ices.fashion.constant.ApiResult;
 import ices.fashion.service.VtoService;
+import ices.fashion.service.dto.VtoDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,13 +21,14 @@ public class VtoController {
     private VtoService vtoService;
 
     @GetMapping("/doVto")
-    public void doVirtualTryOn(@RequestParam String clothFileName, @RequestParam String modelFileName) throws IOException {
+    public ApiResult<VtoDto> doVirtualTryOn(@RequestParam String clothFileName, @RequestParam String modelFileName) throws IOException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println(sdf.format(new Date()));
 //        System.out.println(clothFileName);
 //        System.out.println(modelFileName);
-        vtoService.virtualTryOn(clothFileName, modelFileName);
+        ApiResult<VtoDto> res = vtoService.virtualTryOn(clothFileName, modelFileName);
         System.out.println(sdf.format(new Date()));
+        return res;
     }
 
 }

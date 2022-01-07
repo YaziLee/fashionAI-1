@@ -1,5 +1,12 @@
 package ices.fashion.util;
 
+import com.google.gson.Gson;
+import com.qiniu.common.QiniuException;
+import com.qiniu.storage.BucketManager;
+import com.qiniu.storage.Configuration;
+import com.qiniu.storage.Region;
+import com.qiniu.storage.UploadManager;
+import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.util.Auth;
 import com.qiniu.util.IOUtils;
 import ices.fashion.constant.QiniuCloudConst;
@@ -28,6 +35,8 @@ import java.net.URLEncoder;
 @Slf4j
 public class FileUtil {
 
+    private static final String sepa = File.separator;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(FileUtil.class);
 
     public static File download(String targetUrl, String fileName) {
@@ -48,7 +57,7 @@ public class FileUtil {
                 ResponseBody body = resp.body();
                 InputStream is = body.byteStream();
                 byte[] data = readInputStream(is);
-                String filePath = System.getProperty("user.dir") + "\\img\\";
+                String filePath = System.getProperty("user.dir") + sepa + "img" + sepa;
                 file = new File(filePath + fileName);
                 FileOutputStream fops = new FileOutputStream(file);
                 fops.write(data);
@@ -118,8 +127,8 @@ public class FileUtil {
             e.printStackTrace();
         }
         System.out.println(response.getBody());
-        //程序结束时，删除临时文件
-//		deleteFile(excelFile);
+//        程序结束时，删除临时文件
+		deleteFile(excelFile);
         return response.getBody();
     }
 
@@ -148,7 +157,7 @@ public class FileUtil {
         if(!dir.exists()){//不存在则创建路径
             dir.mkdirs();
         }
-        String filepath = path + "/" + filename;
+        String filepath = path + sepa + filename;
         File file = new File(filepath);
         if(!file.exists()) {
             try {
@@ -162,8 +171,9 @@ public class FileUtil {
     }
 
     //将byte数组写入文件
-    public static String createFile(String filename, byte[] content) {
-        String path = Thread.currentThread().getContextClassLoader().getResource("").getPath() + "tmp/" + filename;
+    public static void createFile(String filename, byte[] content) {
+        String path = System.getProperty("user.dir") + sepa + "img" + sepa + filename;
+        System.out.println(path);
         try {
             FileOutputStream fos = new FileOutputStream(path);
             fos.write(content);
@@ -171,7 +181,6 @@ public class FileUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return path;
     }
 
     public static MultipartFile fileToMultipartFile(File file) throws IOException {
@@ -184,5 +193,54 @@ public class FileUtil {
         }
 
         return new MockMultipartFile(file.getName(), file.getName(), contentType, input);
+    }
+
+    public static void deleteFile(File... files) {
+        for (File file : files) {
+            if (file.exists()) {
+                file.delete();
+            }
+        }
+    }
+
+    public static boolean uploadFile2Cloud(String fileName) {
+        //构造一个带指定 Region 对象的配置类
+        Configuration cfg = new Configuration(Region.huanan());
+        UploadManager uploadManager = new UploadManager(cfg);
+
+        String filePath = System.getProperty("user.dir") + sepa + "img" + sepa + fileName;
+        Auth auth = Auth.create(QiniuCloudConst.ACCESS_KEY, QiniuCloudConst.SECRET_KEY);
+        String upToken = auth.uploadToken(QiniuCloudConst.BUCKET);
+        try {
+            com.qiniu.http.Response response = uploadManager.put(filePath, fileName, upToken);
+            //解析上传成功的结果
+            DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
+//            System.out.println("key is: " + putRet.key);
+//            System.out.println("hash is: " + putRet.hash);
+            return true;
+        } catch (QiniuException  ex) {
+            com.qiniu.http.Response r = ex.response;
+            System.err.println(r.toString());
+            log.error(r.toString());
+            return false;
+//            try {
+//                System.err.println(r.bodyString());
+//            } catch (QiniuException ex2) {
+//                //ignore
+//                ex2.fillInStackTrace();
+//            }
+        }
+    }
+
+    public static void setExpireTime(String fileName) {
+        //构造一个带指定 Region 对象的配置类
+        Configuration cfg = new Configuration(Region.huanan());
+        Auth auth = Auth.create(QiniuCloudConst.ACCESS_KEY, QiniuCloudConst.SECRET_KEY);
+        BucketManager bucketManager = new BucketManager(auth, cfg);
+        try {
+            bucketManager.deleteAfterDays(QiniuCloudConst.BUCKET, fileName, QiniuCloudConst.EXPIRE_DAYS);
+        } catch (QiniuException ex) {
+            System.err.println(ex.response.toString());
+        }
     }
 }
