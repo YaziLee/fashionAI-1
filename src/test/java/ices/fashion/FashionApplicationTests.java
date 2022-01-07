@@ -15,7 +15,7 @@ class FashionApplicationTests {
 
     @Test
     void contextLoads() throws UnsupportedEncodingException {
-        vtoService.virtualTryOn();
+//        vtoService.virtualTryOn();
     }
 
 }
