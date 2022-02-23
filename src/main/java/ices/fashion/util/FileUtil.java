@@ -249,7 +249,7 @@ public class FileUtil {
         }
     }
 
-    public static String pictureToString(File picture) throws IOException {
+    public static String pictureFileToBase64String(File picture) throws IOException {
         String res = "";
         try (FileInputStream input = new FileInputStream(picture)) {
             List<Byte> buffer = new ArrayList<>();
@@ -271,5 +271,9 @@ public class FileUtil {
             e.printStackTrace();
         }
         return res;
+    }
+
+    public static byte[] base64StringToBytes(String s) {
+        return Base64.getDecoder().decode(s);
     }
 }

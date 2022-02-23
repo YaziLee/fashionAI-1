@@ -35,7 +35,7 @@ public class MMCGANServiceImpl implements MMCGANService {
 //        MultipartFile mulCloth = FileUtil.fileToMultipartFile(cloth);
 
         //step2 图片转string并调用模型
-        mmcganCriteria.setOriginalImage(FileUtil.pictureToString(cloth));
+        mmcganCriteria.setOriginalImage(FileUtil.pictureFileToBase64String(cloth));
         mmcganCriteria.setFileName(null);
         String fileName = doGenerate(mmcganCriteria);
 
@@ -77,7 +77,7 @@ public class MMCGANServiceImpl implements MMCGANService {
         List<MMCGANModelDto> mmcganModelDtoList = gson.fromJson(responseEntity.getBody(),
                 new TypeToken<List<MMCGANModelDto>>(){}.getType());
 
-        byte[] base64decodedBytes = Base64.getDecoder().decode(mmcganModelDtoList.get(0).getTargetImage());
+        byte[] base64decodedBytes = FileUtil.base64StringToBytes(mmcganModelDtoList.get(0).getTargetImage());
         FileUtil.createFile(filename, base64decodedBytes);
         return filename;
 
