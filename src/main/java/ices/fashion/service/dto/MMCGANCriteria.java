@@ -15,4 +15,9 @@ public class MMCGANCriteria {
     private String targetCategory;
     private String targetText;
     private String originalImage;
+
+    public void init() {
+        this.id = 1;
+        this.fileName = null;
+    }
 }

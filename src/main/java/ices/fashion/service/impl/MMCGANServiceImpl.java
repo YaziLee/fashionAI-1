@@ -3,23 +3,20 @@ package ices.fashion.service.impl;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import ices.fashion.constant.ApiResult;
-import ices.fashion.constant.MMCGANConst;
+import ices.fashion.constant.GANConst;
 import ices.fashion.constant.QiniuCloudConst;
 import ices.fashion.service.MMCGANService;
 import ices.fashion.service.dto.MMCGANCriteria;
 import ices.fashion.service.dto.MMCGANDto;
 import ices.fashion.service.dto.MMCGANModelDto;
-import ices.fashion.service.dto.VtoDto;
 import ices.fashion.util.FileUtil;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -32,11 +29,10 @@ public class MMCGANServiceImpl implements MMCGANService {
         String clothFileName = mmcganCriteria.getFileName();
         String clothFinalUrl = FileUtil.concatUrl(clothFileName);
         File cloth = FileUtil.download(clothFinalUrl, clothFileName);
-//        MultipartFile mulCloth = FileUtil.fileToMultipartFile(cloth);
 
-        //step2 图片转string并调用模型
+        //step2 图片转string并初始化并调用模型
         mmcganCriteria.setOriginalImage(FileUtil.pictureFileToBase64String(cloth));
-        mmcganCriteria.setFileName(null);
+        mmcganCriteria.init();
         String fileName = doGenerate(mmcganCriteria);
 
         boolean isSuccess = FileUtil.uploadFile2Cloud(fileName);
@@ -59,7 +55,7 @@ public class MMCGANServiceImpl implements MMCGANService {
 
     private String doGenerate(MMCGANCriteria mmcganCriteria) {
 
-        String generateUrl = MMCGANConst.BASE_URL + MMCGANConst.MMC_GAN;
+        String generateUrl = GANConst.BASE_URL + GANConst.MMC_GAN;
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

@@ -1,8 +1,10 @@
 package ices.fashion;
 
 import ices.fashion.service.MMCGANService;
+import ices.fashion.service.OutfitGANService;
 import ices.fashion.service.VtoService;
 import ices.fashion.service.dto.MMCGANCriteria;
+import ices.fashion.service.dto.OutfitGANCriteria;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +17,9 @@ class FashionApplicationTests {
 
     @Autowired
     private MMCGANService mmcganService;
+
+    @Autowired
+    private OutfitGANService outfitGANService;
 
     @Autowired
     private VtoService vtoService;
@@ -35,6 +40,16 @@ class FashionApplicationTests {
                 "Layered Skirt");
         mmcganCriteria.setFileName("e8fd2028d0462196fdd3fbc9b27bbbcc.jpg");
         mmcganService.doMMCGAN(mmcganCriteria);
+    }
+
+    @Test
+    void testOutfitGAN() throws IOException {
+        OutfitGANCriteria outfitGANCriteria = new OutfitGANCriteria();
+        outfitGANCriteria.setUpperFileName("001aeb1dc1adbcb6a36060961f92843e.jpg");
+        outfitGANCriteria.setShoesFileName("001aeb1dc1adbcb6a36060961f92843e_shoes.jpg");
+        outfitGANCriteria.setLowerFileName("001aeb1dc1adbcb6a36060961f92843e_lower.jpg");
+        outfitGANCriteria.setBagFileName("001aeb1dc1adbcb6a36060961f92843e_bag.jpg");
+        outfitGANService.doOutfitGAN(outfitGANCriteria);
     }
 
 }
