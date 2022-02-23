@@ -47,7 +47,7 @@ class FashionApplicationTests {
         OutfitGANCriteria outfitGANCriteria = new OutfitGANCriteria();
         outfitGANCriteria.setUpperFileName("001aeb1dc1adbcb6a36060961f92843e.jpg");
         outfitGANCriteria.setShoesFileName("001aeb1dc1adbcb6a36060961f92843e_shoes.jpg");
-        outfitGANCriteria.setLowerFileName("001aeb1dc1adbcb6a36060961f92843e_lower.jpg");
+//        outfitGANCriteria.setLowerFileName("001aeb1dc1adbcb6a36060961f92843e_lower.jpg");
         outfitGANCriteria.setBagFileName("001aeb1dc1adbcb6a36060961f92843e_bag.jpg");
         outfitGANService.doOutfitGAN(outfitGANCriteria);
     }

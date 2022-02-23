@@ -34,15 +34,15 @@ public class OutfitGANServiceImpl implements OutfitGANService {
 
         String upperFinalUrl = FileUtil.concatUrl(upperFileName);
         File upper = FileUtil.download(upperFinalUrl, upperFileName);
-        if (shoesFileName == null || shoesFileName.isEmpty()) {
+        if (shoesFileName != null && !shoesFileName.isEmpty()) {
             String shoesFinalUrl = FileUtil.concatUrl(shoesFileName);
             shoes = FileUtil.download(shoesFinalUrl, shoesFileName);
         }
-        if (lowerFileName == null || lowerFileName.isEmpty()) {
+        if (lowerFileName != null && !lowerFileName.isEmpty()) {
             String lowerFinalUrl = FileUtil.concatUrl(lowerFileName);
             lower = FileUtil.download(lowerFinalUrl, lowerFileName);
         }
-        if (bagFileName == null || bagFileName.isEmpty()) {
+        if (bagFileName != null && !bagFileName.isEmpty()) {
             String bagFinalUrl = FileUtil.concatUrl(bagFileName);
             bag = FileUtil.download(bagFinalUrl, bagFileName);
         }
