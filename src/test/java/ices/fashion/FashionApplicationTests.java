@@ -2,9 +2,11 @@ package ices.fashion;
 
 import ices.fashion.service.MMCGANService;
 import ices.fashion.service.OutfitGANService;
+import ices.fashion.service.RenderGANService;
 import ices.fashion.service.VtoService;
 import ices.fashion.service.dto.MMCGANCriteria;
 import ices.fashion.service.dto.OutfitGANCriteria;
+import ices.fashion.service.dto.RenderGANCriteria;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +22,9 @@ class FashionApplicationTests {
 
     @Autowired
     private OutfitGANService outfitGANService;
+
+    @Autowired
+    private RenderGANService renderGANService;
 
     @Autowired
     private VtoService vtoService;
@@ -50,6 +55,14 @@ class FashionApplicationTests {
 //        outfitGANCriteria.setLowerFileName("001aeb1dc1adbcb6a36060961f92843e_lower.jpg");
         outfitGANCriteria.setBagFileName("001aeb1dc1adbcb6a36060961f92843e_bag.jpg");
         outfitGANService.doOutfitGAN(outfitGANCriteria);
+    }
+
+    @Test
+    void testRender() throws IOException {
+        RenderGANCriteria renderGANCriteria = new RenderGANCriteria();
+        renderGANCriteria.setColorFileName("render_1.jpg");
+        renderGANCriteria.setSketchFileName("000000221f00000b30e99368f4b72eed.jpg");
+        renderGANService.doRenderGenerate(renderGANCriteria);
     }
 
 }
