@@ -31,6 +31,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
 
 @Slf4j
 public class FileUtil {
@@ -242,5 +247,33 @@ public class FileUtil {
         } catch (QiniuException ex) {
             System.err.println(ex.response.toString());
         }
+    }
+
+    public static String pictureFileToBase64String(File picture) throws IOException {
+        String res = "";
+        try (FileInputStream input = new FileInputStream(picture)) {
+            List<Byte> buffer = new ArrayList<>();
+            int n;
+            while ((n = input.read()) != -1) {
+                buffer.add((byte)n);
+            }
+            byte[] pictureBytes = new byte[buffer.size()];
+            int idx = 0;
+            for (Byte b : buffer) {
+                pictureBytes[idx++] = b;
+            }
+
+            //base64编码后用utf-8编码成字符串
+            byte[] tmp = Base64.getEncoder().encode(pictureBytes);
+            res = new String(tmp, StandardCharsets.UTF_8);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    public static byte[] base64StringToBytes(String s) {
+        return Base64.getDecoder().decode(s);
     }
 }
