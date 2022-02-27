@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+<mapper namespace="ices.fashion.mapper.collaborate.ColProjectMapper">
+    <select id="selectProjectbyMemberId" resultMap="colProjectbyMemberMapper" parameterType="Integer">
+        select col_user.username, p.*
+        from col_user, (
+        select col_project.*
+        from col_project,col_member
+        where col_member.member_id = (#{mid}) and col_member.pid = col_project.id
+        ) as p
+        where col_user.id = p.principle_id
+    </select>
+    <resultMap id="colProjectbyMemberMapper" type="ices.fashion.service.dto.collaborate.ColProjectDto">
+        <result property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="description" column="description" />
+        <result property="principle_id" column="principle_id" />
+        <result property="principle_name" column="username" />
+        <result property="status" column="status" />
+    </resultMap>
+
+    <select id="selectProjectbyId" resultMap="colProjectbyMemberMapper" parameterType="Integer">
+        select col_user.username,col_project.*
+        from col_user,col_project
+        where col_project.id = (#{id}) and col_user.id=col_project.principle_id
+    </select>
+
+    <insert id="insertProject" parameterType="ices.fashion.entity.collaborate.ColProject" useGeneratedKeys="true" keyProperty="id">
+        insert into col_project(name, description, principle_id,status) values ( (#{name}),(#{description}), (#{principle_id}),(#{status}) );
+        insert into col_member(pid, member_id) values (LAST_INSERT_ID(),(#{principle_id}));
+    </insert>
+
+    <delete id="deleteProject">
+        delete from col_member where pid = (#{pid});
+        delete from col_version where pid=(#{pid});
+        delete  from col_project where id=(#{pid});
+    </delete>
+</mapper>
