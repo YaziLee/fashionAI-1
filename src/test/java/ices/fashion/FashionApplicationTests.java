@@ -1,9 +1,6 @@
 package ices.fashion;
 
-import ices.fashion.service.MMCGANService;
-import ices.fashion.service.OutfitGANService;
-import ices.fashion.service.RenderGANService;
-import ices.fashion.service.VtoService;
+import ices.fashion.service.*;
 import ices.fashion.service.dto.MMCGANCriteria;
 import ices.fashion.service.dto.OutfitGANCriteria;
 import ices.fashion.service.dto.RenderGANCriteria;
@@ -28,6 +25,9 @@ class FashionApplicationTests {
 
     @Autowired
     private VtoService vtoService;
+
+    @Autowired
+    private UploadTokenService uploadTokenService;
 
     @Test
     void contextLoads() throws UnsupportedEncodingException {
@@ -63,6 +63,12 @@ class FashionApplicationTests {
         renderGANCriteria.setColorFileName("render_1.jpg");
         renderGANCriteria.setSketchFileName("000000221f00000b30e99368f4b72eed.jpg");
         renderGANService.doRenderGenerate(renderGANCriteria);
+    }
+
+    @Test
+    void testUploadToken() {
+        String token = uploadTokenService.getUploadToken();
+        System.out.println(token);
     }
 
 }
