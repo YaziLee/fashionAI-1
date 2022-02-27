@@ -98,7 +98,7 @@ public class OutfitGANServiceImpl implements OutfitGANService {
 
     private OutfitGANModelDto doGenerate(OutfitGANCriteria outfitGANCriteria) {
 
-        String generateUrl = GANConst.BASE_URL + GANConst.OUTFIT_GAN;
+        String generateUrl = GANConst.OUTFIT_GAN_BASE_URL + GANConst.OUTFIT_GAN;
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

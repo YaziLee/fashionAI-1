@@ -57,7 +57,7 @@ public class RenderGANServiceImpl implements RenderGANService {
 
     private String doGenerate(RenderGANCriteria renderGANCriteria) {
 
-        String generateUrl = GANConst.BASE_URL + GANConst.RENDER_GAN;
+        String generateUrl = GANConst.RENDER_GAN_BASE_URL + GANConst.RENDER_GAN;
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

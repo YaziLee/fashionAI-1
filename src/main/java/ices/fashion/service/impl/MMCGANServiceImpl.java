@@ -55,7 +55,7 @@ public class MMCGANServiceImpl implements MMCGANService {
 
     private String doGenerate(MMCGANCriteria mmcganCriteria) {
 
-        String generateUrl = GANConst.BASE_URL + GANConst.MMC_GAN;
+        String generateUrl = GANConst.MMC_GAN_BASE_URL + GANConst.MMC_GAN;
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
