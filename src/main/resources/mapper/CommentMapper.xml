@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+<mapper namespace="ices.fashion.mapper.collaborate.ColCommentMapper">
+    <select id="selectComment" resultMap="colCommentQuery">
+        select col_user.*, col_comment.*
+        from col_comment, col_user
+        where col_comment.uid = col_user.id
+    </select>
+
+    <resultMap id="colCommentQuery" type="ices.fashion.entity.collaborate.ColCommentQuery">
+        <result property="uid" column="uid"></result>
+        <result property="username" column="username"></result>
+        <result property="cid" column="col_comment.id" />
+        <result property="vid" column="vid" />
+        <result property="content" column="content" />
+        <result property="status" column="status" />
+        <result property="createTime" column="create_time" />
+        <result property="canvas" column="canvas" />
+    </resultMap>
+</mapper>
