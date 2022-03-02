@@ -1,15 +1,20 @@
 package ices.fashion.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import ices.fashion.constant.ApiResult;
 import ices.fashion.constant.GANConst;
 import ices.fashion.constant.QiniuCloudConst;
+import ices.fashion.entity.TMmc;
+import ices.fashion.mapper.MMCGANMapper;
 import ices.fashion.service.MMCGANService;
 import ices.fashion.service.dto.MMCGANCriteria;
 import ices.fashion.service.dto.MMCGANDto;
 import ices.fashion.service.dto.MMCGANModelDto;
 import ices.fashion.util.FileUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -22,6 +27,9 @@ import java.util.List;
 @Service
 public class MMCGANServiceImpl implements MMCGANService {
 
+    @Autowired
+    private MMCGANMapper mmcganMapper;
+
     @Override
     public ApiResult<MMCGANDto> doMMCGAN(MMCGANCriteria mmcganCriteria) throws IOException {
 
@@ -30,7 +38,12 @@ public class MMCGANServiceImpl implements MMCGANService {
         String clothFinalUrl = FileUtil.concatUrl(clothFileName);
         File cloth = FileUtil.download(clothFinalUrl, clothFileName);
 
-        //step2 图片转string并初始化并调用模型
+        //step2 图片转string，调用DB初始化，调用模型
+        QueryWrapper<TMmc> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("file_name", mmcganCriteria.getFileName());
+        TMmc cur = mmcganMapper.selectOne(queryWrapper);
+        mmcganCriteria.setOriginalText(cur.getOriginalText());
+        System.out.println(cur.getOriginalText());
         mmcganCriteria.setOriginalImage(FileUtil.pictureFileToBase64String(cloth));
         mmcganCriteria.init();
         String fileName = doGenerate(mmcganCriteria);
@@ -50,6 +63,17 @@ public class MMCGANServiceImpl implements MMCGANService {
         String fileUrl = QiniuCloudConst.DOMAIN_BUCKET + "/" + fileName;
         res.setData(new MMCGANDto(fileUrl));
         System.out.println(fileUrl);
+        return res;
+    }
+
+    @Override
+    public ApiResult<List<TMmc>> init() throws IOException {
+
+        QueryWrapper<TMmc> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("file_name");
+        List<TMmc> tMmcList = mmcganMapper.selectList(queryWrapper);
+        ApiResult<List<TMmc>> res = new ApiResult(200, "success");
+        res.setData(tMmcList);
         return res;
     }
 

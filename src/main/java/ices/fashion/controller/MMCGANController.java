@@ -1,6 +1,7 @@
 package ices.fashion.controller;
 
 import ices.fashion.constant.ApiResult;
+import ices.fashion.entity.TMmc;
 import ices.fashion.service.MMCGANService;
 import ices.fashion.service.dto.MMCGANCriteria;
 import ices.fashion.service.dto.MMCGANDto;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -25,6 +27,11 @@ public class MMCGANController {
 
         ApiResult<MMCGANDto> res = mmcganService.doMMCGAN(mmcganCriteria);
         return res;
+    }
+
+    @GetMapping("/init")
+    public ApiResult<List<TMmc>> init() throws IOException {
+        return mmcganService.init();
     }
 
 }

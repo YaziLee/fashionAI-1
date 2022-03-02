@@ -7,8 +7,10 @@ import ices.fashion.service.dto.RenderGANCriteria;
 import ices.fashion.service.dto.RenderGANDto;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface RenderGANService {
 
     public ApiResult<RenderGANDto> doRenderGenerate(RenderGANCriteria renderGANCriteria) throws IOException;
+    public ApiResult<List<String>> init();
 }

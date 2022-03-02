@@ -13,4 +13,6 @@ public class GANConst {
     public static final String LOWER = "lower";
     public static final String UPPER = "upper";
     public static final String BAG = "bag";
+
+    public static final String RENDER_SKETCH_FILE_NAME_PREFIX = "fashion/render/sketch/";
 }

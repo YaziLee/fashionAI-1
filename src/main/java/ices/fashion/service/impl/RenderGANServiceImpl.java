@@ -1,13 +1,18 @@
 package ices.fashion.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import ices.fashion.constant.ApiResult;
 import ices.fashion.constant.GANConst;
 import ices.fashion.constant.QiniuCloudConst;
+import ices.fashion.entity.TOutfitUpper;
+import ices.fashion.entity.TRender;
+import ices.fashion.mapper.RenderMapper;
 import ices.fashion.service.RenderGANService;
 import ices.fashion.service.dto.*;
 import ices.fashion.util.FileUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -16,15 +21,21 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RenderGANServiceImpl implements RenderGANService {
 
+    @Autowired
+    private RenderMapper renderMapper;
+
     @Override
     public ApiResult<RenderGANDto> doRenderGenerate(RenderGANCriteria renderGANCriteria) throws IOException {
 
-        //step1 下载图片
-        String sketchFileName = renderGANCriteria.getSketchFileName();
+        //step1 sketchFileName得到字段，下载图片
+        String[] originFileNameArray = renderGANCriteria.getOriginFileName().split("/");
+        String sketchFileName = GANConst.RENDER_SKETCH_FILE_NAME_PREFIX
+                + originFileNameArray[originFileNameArray.length - 1];
         String sketchFinalUrl = FileUtil.concatUrl(sketchFileName);
         File sketch = FileUtil.download(sketchFinalUrl, sketchFileName);
         String colorFileName = renderGANCriteria.getColorFileName();
@@ -52,6 +63,16 @@ public class RenderGANServiceImpl implements RenderGANService {
         String fileUrl = QiniuCloudConst.DOMAIN_BUCKET + "/" + fileName;
         res.setData(new RenderGANDto(fileUrl));
         System.out.println(fileUrl);
+        return res;
+    }
+
+    @Override
+    public ApiResult<List<String>> init() {
+        QueryWrapper<TRender> tRenderQueryWrapper = new QueryWrapper<>();
+        tRenderQueryWrapper.eq("category", "origin");
+        List<TRender> tRenderList = renderMapper.selectList(tRenderQueryWrapper);
+        ApiResult<List<String>> res = new ApiResult(200, "success");
+        res.setData(tRenderList.stream().map(TRender::getFileName).collect(Collectors.toList()));
         return res;
     }
 

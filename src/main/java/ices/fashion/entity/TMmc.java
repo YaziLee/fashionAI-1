@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TMMCGANMaterial {
+public class TMmc {
 
+    private String fileName;
     private Integer id;
+    private String originalText;
 }

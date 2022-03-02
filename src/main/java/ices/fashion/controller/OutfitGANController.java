@@ -2,10 +2,7 @@ package ices.fashion.controller;
 
 import ices.fashion.constant.ApiResult;
 import ices.fashion.service.OutfitGANService;
-import ices.fashion.service.dto.MMCGANCriteria;
-import ices.fashion.service.dto.MMCGANDto;
-import ices.fashion.service.dto.OutfitGANCriteria;
-import ices.fashion.service.dto.OutfitGANDto;
+import ices.fashion.service.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,5 +21,10 @@ public class OutfitGANController {
 
         ApiResult<OutfitGANDto> res = outfitGANService.doOutfitGAN(outfitGANCriteria);
         return res;
+    }
+
+    @GetMapping("/init")
+    public ApiResult<OutfitGANInitDto> init() {
+        return outfitGANService.init();
     }
 }
