@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class RenderGANServiceImpl implements RenderGANService {
@@ -52,7 +53,7 @@ public class RenderGANServiceImpl implements RenderGANService {
 
         //step3 删除图片
         File renderFile = new File(System.getProperty("user.dir") + File.separator + "img" + File.separator + fileName);
-//        FileUtil.deleteFile(sketch, color, renderFile);
+        FileUtil.deleteFile(sketch, color, renderFile);
 
         //step4 返回结果
         if (!isSuccess) {
@@ -67,12 +68,28 @@ public class RenderGANServiceImpl implements RenderGANService {
     }
 
     @Override
-    public ApiResult<List<String>> init() {
+    public ApiResult<RenderInitDto> init() {
         QueryWrapper<TRender> tRenderQueryWrapper = new QueryWrapper<>();
-        tRenderQueryWrapper.eq("category", "origin");
-        List<TRender> tRenderList = renderMapper.selectList(tRenderQueryWrapper);
-        ApiResult<List<String>> res = new ApiResult(200, "success");
-        res.setData(tRenderList.stream().map(TRender::getFileName).collect(Collectors.toList()));
+        tRenderQueryWrapper.eq("type", "origin");
+        Stream<TRender> tRenderStream = renderMapper.selectList(tRenderQueryWrapper).stream();
+        RenderInitDto renderInitDto = new RenderInitDto();
+        renderInitDto.setBagList(tRenderStream.filter(e -> e.getCategory().equals(GANConst.BAG))
+                .map(TRender::getFileName).collect(Collectors.toList()));
+        renderInitDto.setHatList(tRenderStream.filter(e -> e.getCategory().equals(GANConst.HAT))
+                .map(TRender::getFileName).collect(Collectors.toList()));
+        renderInitDto.setJacketList(tRenderStream.filter(e -> e.getCategory().equals(GANConst.JACKET))
+                .map(TRender::getFileName).collect(Collectors.toList()));
+        renderInitDto.setJeansList(tRenderStream.filter(e -> e.getCategory().equals(GANConst.JEANS))
+                .map(TRender::getFileName).collect(Collectors.toList()));
+        renderInitDto.setShortsList(tRenderStream.filter(e -> e.getCategory().equals(GANConst.SHORTS))
+                .map(TRender::getFileName).collect(Collectors.toList()));
+        renderInitDto.setSkirtList(tRenderStream.filter(e -> e.getCategory().equals(GANConst.SKIRT))
+                .map(TRender::getFileName).collect(Collectors.toList()));
+        renderInitDto.setTopList(tRenderStream.filter(e -> e.getCategory().equals(GANConst.TOP))
+                .map(TRender::getFileName).collect(Collectors.toList()));
+
+        ApiResult<RenderInitDto> res = new ApiResult(200, "success");
+        res.setData(renderInitDto);
         return res;
     }
 

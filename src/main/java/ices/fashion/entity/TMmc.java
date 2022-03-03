@@ -12,4 +12,5 @@ public class TMmc {
     private String fileName;
     private Integer id;
     private String originalText;
+    private String category;
 }

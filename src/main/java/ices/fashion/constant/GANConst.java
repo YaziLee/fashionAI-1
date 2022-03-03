@@ -13,6 +13,16 @@ public class GANConst {
     public static final String LOWER = "lower";
     public static final String UPPER = "upper";
     public static final String BAG = "bag";
+    public static final String TOP = "top";
+    public static final String JACKET = "jacket";
+    public static final String JEANS = "jeans";
+    public static final String SHORTS = "shorts";
+    public static final String SKIRT = "skirt";
+    public static final String HAT = "hat";
+    public static final String OUTERWEAR = "outerwear";
+    public static final String PANTS = "pants";
+    public static final String SWEATSHIRT_HOODY = "sweatshirt_hoody";
 
     public static final String RENDER_SKETCH_FILE_NAME_PREFIX = "fashion/render/sketch/";
+
 }

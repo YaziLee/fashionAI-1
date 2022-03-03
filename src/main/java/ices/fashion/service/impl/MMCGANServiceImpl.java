@@ -12,6 +12,7 @@ import ices.fashion.mapper.MMCGANMapper;
 import ices.fashion.service.MMCGANService;
 import ices.fashion.service.dto.MMCGANCriteria;
 import ices.fashion.service.dto.MMCGANDto;
+import ices.fashion.service.dto.MMCGANInitDto;
 import ices.fashion.service.dto.MMCGANModelDto;
 import ices.fashion.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class MMCGANServiceImpl implements MMCGANService {
@@ -67,13 +70,28 @@ public class MMCGANServiceImpl implements MMCGANService {
     }
 
     @Override
-    public ApiResult<List<TMmc>> init() throws IOException {
+    public ApiResult<MMCGANInitDto> init() throws IOException {
 
-        QueryWrapper<TMmc> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("file_name");
-        List<TMmc> tMmcList = mmcganMapper.selectList(queryWrapper);
-        ApiResult<List<TMmc>> res = new ApiResult(200, "success");
-        res.setData(tMmcList);
+        Stream<TMmc> mmcList = mmcganMapper.selectList(null).stream();
+        MMCGANInitDto mmcganInitDto = new MMCGANInitDto();
+        mmcganInitDto.setJacketList(mmcList.filter(e -> e.getCategory().equals(GANConst.JACKET))
+                .map(TMmc::getFileName).collect(Collectors.toList()));
+        mmcganInitDto.setJeansList(mmcList.filter(e -> e.getCategory().equals(GANConst.JEANS))
+                .map(TMmc::getFileName).collect(Collectors.toList()));
+        mmcganInitDto.setOuterwearList(mmcList.filter(e -> e.getCategory().equals(GANConst.OUTERWEAR))
+                .map(TMmc::getFileName).collect(Collectors.toList()));
+        mmcganInitDto.setPantsList(mmcList.filter(e -> e.getCategory().equals(GANConst.PANTS))
+                .map(TMmc::getFileName).collect(Collectors.toList()));
+        mmcganInitDto.setShortsList(mmcList.filter(e -> e.getCategory().equals(GANConst.SHORTS))
+                .map(TMmc::getFileName).collect(Collectors.toList()));
+        mmcganInitDto.setSkirtList(mmcList.filter(e -> e.getCategory().equals(GANConst.SKIRT))
+                .map(TMmc::getFileName).collect(Collectors.toList()));
+        mmcganInitDto.setSweatshirtHoodyList(mmcList.filter(e -> e.getCategory().equals(GANConst.SWEATSHIRT_HOODY))
+                .map(TMmc::getFileName).collect(Collectors.toList()));
+        mmcganInitDto.setTopList(mmcList.filter(e -> e.getCategory().equals(GANConst.TOP))
+                .map(TMmc::getFileName).collect(Collectors.toList()));
+        ApiResult<MMCGANInitDto> res = new ApiResult(200, "success");
+        res.setData(mmcganInitDto);
         return res;
     }
 

@@ -12,4 +12,5 @@ public class TRender {
     private Integer id;
     private String fileName;
     private String category;
+    private String type;
 }

@@ -4,6 +4,7 @@ import ices.fashion.constant.ApiResult;
 import ices.fashion.service.RenderGANService;
 import ices.fashion.service.dto.RenderGANCriteria;
 import ices.fashion.service.dto.RenderGANDto;
+import ices.fashion.service.dto.RenderInitDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class RenderGANController {
     }
 
     @GetMapping("/init")
-    public ApiResult<List<String>> init() {
+    public ApiResult<RenderInitDto> init() {
         return renderGANService.init();
     }
 }

@@ -5,6 +5,7 @@ import ices.fashion.entity.TMmc;
 import ices.fashion.service.MMCGANService;
 import ices.fashion.service.dto.MMCGANCriteria;
 import ices.fashion.service.dto.MMCGANDto;
+import ices.fashion.service.dto.MMCGANInitDto;
 import ices.fashion.service.dto.VtoDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class MMCGANController {
     }
 
     @GetMapping("/init")
-    public ApiResult<List<TMmc>> init() throws IOException {
+    public ApiResult<MMCGANInitDto> init() throws IOException {
         return mmcganService.init();
     }
 
