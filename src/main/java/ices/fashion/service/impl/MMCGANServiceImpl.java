@@ -72,23 +72,23 @@ public class MMCGANServiceImpl implements MMCGANService {
     @Override
     public ApiResult<MMCGANInitDto> init() throws IOException {
 
-        Stream<TMmc> mmcList = mmcganMapper.selectList(null).stream();
+        List<TMmc> mmcList = mmcganMapper.selectList(null);
         MMCGANInitDto mmcganInitDto = new MMCGANInitDto();
-        mmcganInitDto.setJacketList(mmcList.filter(e -> e.getCategory().equals(GANConst.JACKET))
+        mmcganInitDto.setJacketList(mmcList.stream().filter(e -> e.getCategory().equals(GANConst.JACKET))
                 .map(TMmc::getFileName).collect(Collectors.toList()));
-        mmcganInitDto.setJeansList(mmcList.filter(e -> e.getCategory().equals(GANConst.JEANS))
+        mmcganInitDto.setJeansList(mmcList.stream().filter(e -> e.getCategory().equals(GANConst.JEANS))
                 .map(TMmc::getFileName).collect(Collectors.toList()));
-        mmcganInitDto.setOuterwearList(mmcList.filter(e -> e.getCategory().equals(GANConst.OUTERWEAR))
+        mmcganInitDto.setOuterwearList(mmcList.stream().filter(e -> e.getCategory().equals(GANConst.OUTERWEAR))
                 .map(TMmc::getFileName).collect(Collectors.toList()));
-        mmcganInitDto.setPantsList(mmcList.filter(e -> e.getCategory().equals(GANConst.PANTS))
+        mmcganInitDto.setPantsList(mmcList.stream().filter(e -> e.getCategory().equals(GANConst.PANTS))
                 .map(TMmc::getFileName).collect(Collectors.toList()));
-        mmcganInitDto.setShortsList(mmcList.filter(e -> e.getCategory().equals(GANConst.SHORTS))
+        mmcganInitDto.setShortsList(mmcList.stream().filter(e -> e.getCategory().equals(GANConst.SHORTS))
                 .map(TMmc::getFileName).collect(Collectors.toList()));
-        mmcganInitDto.setSkirtList(mmcList.filter(e -> e.getCategory().equals(GANConst.SKIRT))
+        mmcganInitDto.setSkirtList(mmcList.stream().filter(e -> e.getCategory().equals(GANConst.SKIRT))
                 .map(TMmc::getFileName).collect(Collectors.toList()));
-        mmcganInitDto.setSweatshirtHoodyList(mmcList.filter(e -> e.getCategory().equals(GANConst.SWEATSHIRT_HOODY))
+        mmcganInitDto.setSweatshirtHoodyList(mmcList.stream().filter(e -> e.getCategory().equals(GANConst.SWEATSHIRT_HOODY))
                 .map(TMmc::getFileName).collect(Collectors.toList()));
-        mmcganInitDto.setTopList(mmcList.filter(e -> e.getCategory().equals(GANConst.TOP))
+        mmcganInitDto.setTopList(mmcList.stream().filter(e -> e.getCategory().equals(GANConst.TOP))
                 .map(TMmc::getFileName).collect(Collectors.toList()));
         ApiResult<MMCGANInitDto> res = new ApiResult(200, "success");
         res.setData(mmcganInitDto);

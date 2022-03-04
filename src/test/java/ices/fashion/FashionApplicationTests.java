@@ -13,14 +13,11 @@ import ices.fashion.mapper.collaborate.ColVersionMapper;
 import ices.fashion.service.ColCommentService;
 import ices.fashion.service.ColProjectService;
 import ices.fashion.service.ColVersionService;
-import ices.fashion.service.dto.OutfitGANInitDto;
+import ices.fashion.service.dto.*;
 import ices.fashion.service.dto.collaborate.ColCommentDto;
 import ices.fashion.service.dto.collaborate.ColProjectDto;
 import ices.fashion.service.dto.collaborate.ColVersionDto;
 import ices.fashion.service.*;
-import ices.fashion.service.dto.MMCGANCriteria;
-import ices.fashion.service.dto.OutfitGANCriteria;
-import ices.fashion.service.dto.RenderGANCriteria;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -148,7 +145,7 @@ class FashionApplicationTests {
 
     @Test
     void testMMCGANInit() throws IOException {
-        ApiResult<List<TMmc>> res =  mmcganService.init();
+        ApiResult<MMCGANInitDto> res =  mmcganService.init();
         System.out.println(res.getData());
         QueryWrapper<TMmc> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("file_name", "e8fd2028d0462196fdd3fbc9b27bbbcc.jpg");
