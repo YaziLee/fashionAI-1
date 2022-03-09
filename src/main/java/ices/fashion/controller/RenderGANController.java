@@ -21,9 +21,13 @@ public class RenderGANController {
 
     @PostMapping("/doRender")
     public ApiResult<RenderGANDto> doRender(@RequestBody RenderGANCriteria renderGANCriteria) throws IOException {
-
-        ApiResult<RenderGANDto> res = renderGANService.doRenderGenerate(renderGANCriteria);
-        return res;
+        try {
+            ApiResult<RenderGANDto> res = renderGANService.doRenderGenerate(renderGANCriteria);
+            return res;
+        }catch (Exception e){
+            ApiResult<RenderGANDto> res = new ApiResult<>(500,e.getMessage());
+            return res;
+        }
     }
 
     @GetMapping("/init")

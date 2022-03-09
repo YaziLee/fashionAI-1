@@ -25,9 +25,14 @@ public class MMCGANController {
 
     @PostMapping("/doMMCGAN")
     public ApiResult<MMCGANDto> doMMCGAN(@RequestBody MMCGANCriteria mmcganCriteria) throws IOException {
+        try{
+            ApiResult<MMCGANDto> res = mmcganService.doMMCGAN(mmcganCriteria);
+            return res;
+        }catch (Exception e){
+            ApiResult<MMCGANDto> error = new ApiResult<>(500,e.getMessage());
+            return error;
+        }
 
-        ApiResult<MMCGANDto> res = mmcganService.doMMCGAN(mmcganCriteria);
-        return res;
     }
 
     @GetMapping("/init")

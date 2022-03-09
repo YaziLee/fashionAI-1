@@ -126,7 +126,12 @@ class FashionApplicationTests {
         outfitGANCriteria.setShoesFileName("001aeb1dc1adbcb6a36060961f92843e_shoes.jpg");
 //        outfitGANCriteria.setLowerFileName("001aeb1dc1adbcb6a36060961f92843e_lower.jpg");
         outfitGANCriteria.setBagFileName("001aeb1dc1adbcb6a36060961f92843e_bag.jpg");
-        outfitGANService.doOutfitGAN(outfitGANCriteria);
+        try{
+            outfitGANService.doOutfitGAN(outfitGANCriteria);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @Test
@@ -164,6 +169,17 @@ class FashionApplicationTests {
         String s = "fashion/outfit-gan/upper/001eeda1267459a4c5dfe924c8f0468e.jpg";
         String[] ss = s.split("/");
         System.out.println(ss[ss.length - 1]);
+    }
+
+    @Autowired
+    ColUserService colUserService;
+
+    @Test
+    void testColLogin(){
+        String phone = "18218746467";
+        String userName="zhangsan";
+        int id = colUserService.login(phone,userName);
+        System.out.println("colLogin "+id);
     }
 
 }

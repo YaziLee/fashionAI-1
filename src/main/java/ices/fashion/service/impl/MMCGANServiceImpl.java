@@ -17,6 +17,7 @@ import ices.fashion.service.dto.MMCGANModelDto;
 import ices.fashion.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -98,7 +99,11 @@ public class MMCGANServiceImpl implements MMCGANService {
     private String doGenerate(MMCGANCriteria mmcganCriteria) {
 
         String generateUrl = GANConst.MMC_GAN_BASE_URL + GANConst.MMC_GAN;
-        RestTemplate restTemplate = new RestTemplate();
+
+        //设置超时时间
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setConnectTimeout(12000);
+        RestTemplate restTemplate = new RestTemplate(requestFactory);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         List<MediaType> mediaTypeList = new ArrayList<>();

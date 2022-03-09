@@ -18,9 +18,13 @@ public class OutfitGANController {
 
     @PostMapping("/doOutfitGAN")
     public ApiResult<OutfitGANDto> doOutfitGAN(@RequestBody OutfitGANCriteria outfitGANCriteria) throws IOException {
-
-        ApiResult<OutfitGANDto> res = outfitGANService.doOutfitGAN(outfitGANCriteria);
-        return res;
+        try {
+            ApiResult<OutfitGANDto> res = outfitGANService.doOutfitGAN(outfitGANCriteria);
+            return res;
+        }catch (Exception e){
+            ApiResult<OutfitGANDto> res = new ApiResult<>(500,e.getMessage());
+            return res;
+        }
     }
 
     @GetMapping("/init")

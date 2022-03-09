@@ -18,6 +18,7 @@ import ices.fashion.service.dto.*;
 import ices.fashion.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -136,7 +137,10 @@ public class OutfitGANServiceImpl implements OutfitGANService {
     private OutfitGANModelDto doGenerate(OutfitGANCriteria outfitGANCriteria) {
 
         String generateUrl = GANConst.OUTFIT_GAN_BASE_URL + GANConst.OUTFIT_GAN;
-        RestTemplate restTemplate = new RestTemplate();
+        //设置超时时间
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setConnectTimeout(12000);
+        RestTemplate restTemplate = new RestTemplate(requestFactory);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         List<MediaType> mediaTypeList = new ArrayList<>();
