@@ -1,21 +1,23 @@
 package ices.fashion;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import ices.fashion.constant.ApiResult;
+import ices.fashion.entity.TMmc;
 import ices.fashion.entity.collaborate.ColComment;
 import ices.fashion.entity.collaborate.ColCommentQuery;
 import ices.fashion.entity.collaborate.ColProject;
+import ices.fashion.mapper.MMCGANMapper;
 import ices.fashion.mapper.collaborate.ColCommentMapper;
 import ices.fashion.mapper.collaborate.ColProjectMapper;
 import ices.fashion.mapper.collaborate.ColVersionMapper;
 import ices.fashion.service.ColCommentService;
 import ices.fashion.service.ColProjectService;
 import ices.fashion.service.ColVersionService;
+import ices.fashion.service.dto.*;
 import ices.fashion.service.dto.collaborate.ColCommentDto;
 import ices.fashion.service.dto.collaborate.ColProjectDto;
 import ices.fashion.service.dto.collaborate.ColVersionDto;
 import ices.fashion.service.*;
-import ices.fashion.service.dto.MMCGANCriteria;
-import ices.fashion.service.dto.OutfitGANCriteria;
-import ices.fashion.service.dto.RenderGANCriteria;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,6 +49,9 @@ class FashionApplicationTests {
 
     @Autowired
     private ColVersionService colVersionService;
+
+    @Autowired
+    private MMCGANMapper mmcganMapper;
 
     @Test
     void contextLoads() {
@@ -121,7 +126,12 @@ class FashionApplicationTests {
         outfitGANCriteria.setShoesFileName("001aeb1dc1adbcb6a36060961f92843e_shoes.jpg");
 //        outfitGANCriteria.setLowerFileName("001aeb1dc1adbcb6a36060961f92843e_lower.jpg");
         outfitGANCriteria.setBagFileName("001aeb1dc1adbcb6a36060961f92843e_bag.jpg");
-        outfitGANService.doOutfitGAN(outfitGANCriteria);
+        try{
+            outfitGANService.doOutfitGAN(outfitGANCriteria);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @Test
@@ -136,6 +146,40 @@ class FashionApplicationTests {
     void testUploadToken() {
         String token = uploadTokenService.getUploadToken();
         System.out.println(token);
+    }
+
+    @Test
+    void testMMCGANInit() throws IOException {
+        ApiResult<MMCGANInitDto> res =  mmcganService.init();
+        System.out.println(res.getData());
+        QueryWrapper<TMmc> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("file_name", "e8fd2028d0462196fdd3fbc9b27bbbcc.jpg");
+        TMmc cur = mmcganMapper.selectOne(queryWrapper);
+        System.out.println(cur);
+    }
+
+    @Test
+    void testOutfitGANInit() throws IOException {
+        ApiResult<OutfitGANInitDto> res = outfitGANService.init();
+        System.out.println(res.getData());
+    }
+
+    @Test
+    void testSplit() {
+        String s = "fashion/outfit-gan/upper/001eeda1267459a4c5dfe924c8f0468e.jpg";
+        String[] ss = s.split("/");
+        System.out.println(ss[ss.length - 1]);
+    }
+
+    @Autowired
+    ColUserService colUserService;
+
+    @Test
+    void testColLogin(){
+        String phone = "18218746467";
+        String userName="zhangsan";
+        int id = colUserService.login(phone,userName);
+        System.out.println("colLogin "+id);
     }
 
 }

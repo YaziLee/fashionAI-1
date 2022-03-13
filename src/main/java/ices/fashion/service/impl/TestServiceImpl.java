@@ -5,7 +5,6 @@ import ices.fashion.entity.TBaseMaterial;
 import ices.fashion.mapper.TBaseMaterialMapper;
 import ices.fashion.service.TestService;
 import ices.fashion.service.dto.TestDto;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
