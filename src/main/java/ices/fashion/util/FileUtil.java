@@ -2,6 +2,7 @@ package ices.fashion.util;
 
 import com.google.gson.Gson;
 import com.qiniu.common.QiniuException;
+import com.qiniu.common.Zone;
 import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
 import com.qiniu.storage.Region;
@@ -15,6 +16,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Base64Utils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -31,8 +35,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Slf4j
+@Component
 public class FileUtil {
 
     private static final String sepa = File.separator;
@@ -72,7 +79,7 @@ public class FileUtil {
 
     public static byte[] readInputStream(InputStream is) {
         ByteArrayOutputStream writer = new ByteArrayOutputStream();
-        byte[] buff  = new byte[1024 * 2];
+        byte[] buff = new byte[1024 * 2];
         int len = 0;
         try {
             while ((len = is.read(buff)) != -1) {
@@ -84,7 +91,6 @@ public class FileUtil {
         }
         return writer.toByteArray();
     }
-
 
 
     public static String getDownloadUrl(String targetUrl) {
@@ -99,6 +105,7 @@ public class FileUtil {
 
     /**
      * 向 url 发送图像
+     *
      * @param multipartFile
      * @param url
      * @return
@@ -115,7 +122,7 @@ public class FileUtil {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        MultiValueMap<String, Object> map= new LinkedMultiValueMap<>();
+        MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
         map.add(name, fileSystemResource);
         HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
         // 发起 Post 请求
@@ -128,7 +135,7 @@ public class FileUtil {
         }
         System.out.println(response.getBody());
 //        程序结束时，删除临时文件
-		deleteFile(excelFile);
+        deleteFile(excelFile);
         return response.getBody();
     }
 
@@ -154,12 +161,12 @@ public class FileUtil {
     private static File createTmpFile(String filename) {
         String path = Thread.currentThread().getContextClassLoader().getResource("").getPath() + "tmp";
         File dir = new File(path);
-        if(!dir.exists()){//不存在则创建路径
+        if (!dir.exists()) {//不存在则创建路径
             dir.mkdirs();
         }
         String filepath = path + sepa + filename;
         File file = new File(filepath);
-        if(!file.exists()) {
+        if (!file.exists()) {
             try {
                 file.createNewFile();
             } catch (IOException e) {
@@ -218,7 +225,7 @@ public class FileUtil {
 //            System.out.println("key is: " + putRet.key);
 //            System.out.println("hash is: " + putRet.hash);
             return true;
-        } catch (QiniuException  ex) {
+        } catch (QiniuException ex) {
             com.qiniu.http.Response r = ex.response;
             System.err.println(r.toString());
             log.error(r.toString());
@@ -242,5 +249,43 @@ public class FileUtil {
         } catch (QiniuException ex) {
             System.err.println(ex.response.toString());
         }
+    }
+
+    /**
+     * 上传multipartFile到七牛云
+     */
+    public String uploadMultipartFile(MultipartFile multipartFile) {
+        if (multipartFile != null && StringUtils.isNotEmpty(multipartFile.getOriginalFilename())) {
+            try {
+
+                // 密钥配置
+                Auth auth = Auth.create(QiniuCloudConst.ACCESS_KEY, QiniuCloudConst.SECRET_KEY);
+                // 创建上传对象，表示指定Zone对象的配置类；zone2：华南地区
+                Configuration configuration = new Configuration(Zone.zone2());
+                UploadManager uploadManager = new UploadManager(configuration);
+
+                // 文件名：yyyyMMdd_timeStamp_OriginalFileName
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+                String date = simpleDateFormat.format(new Date());
+                String fileName = date + "_" + System.currentTimeMillis() + "_"
+                        + Base64Utils.encodeToString(multipartFile.getOriginalFilename().getBytes("UTF-8"));
+                String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+                if (StringUtils.isEmpty(extension)) {
+                    extension = "png";
+                }
+                String fullName = fileName + "." + extension;
+
+                InputStream inputStream = multipartFile.getInputStream();
+                // 调用put方法上传
+                com.qiniu.http.Response response = uploadManager.put(inputStream, fullName, auth.uploadToken(QiniuCloudConst.BUCKET), null, null);
+                String url = QiniuCloudConst.DOMAIN_BUCKET + "/" + fullName;
+                LOGGER.info("image url: {}", url);
+                return url;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return null;
     }
 }
