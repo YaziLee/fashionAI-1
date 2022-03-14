@@ -1,5 +1,6 @@
 package ices.fashion.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import ices.fashion.constant.ApiResult;
@@ -175,19 +176,25 @@ public class OutfitGANServiceImpl implements OutfitGANService {
     }
 
     private File getRandomMaskImage(String category) throws UnsupportedEncodingException {
-        /*
-        todo
-        每个样例都要去数据库随机找一个fileName
-        目前写死了
-         */
+
+
         String fileName = null;
 
         if (category.equals(GANConst.SHOES)) {
-            fileName = "001aeb1dc1adbcb6a36060961f92843e_shoes.jpg";
+            QueryWrapper<TOutfitShoes> tOutfitShoesQueryWrapper = new QueryWrapper<>();
+            tOutfitShoesQueryWrapper.last("limit 1");
+            TOutfitShoes tOutfitShoes = tOutfitShoesMapper.selectOne(tOutfitShoesQueryWrapper);
+            fileName = tOutfitShoes.getFileName();
         } else if (category.equals(GANConst.BAG)) {
-            fileName = "001aeb1dc1adbcb6a36060961f92843e_bag.jpg";
+            QueryWrapper<TOutfitBag> tOutfitBagQueryWrapper = new QueryWrapper<>();
+            tOutfitBagQueryWrapper.last("limit 1");
+            TOutfitBag tOutfitBag = tOutfitBagMapper.selectOne(tOutfitBagQueryWrapper);
+            fileName = tOutfitBag.getFileName();
         } else if (category.equals(GANConst.LOWER)) {
-            fileName = "001aeb1dc1adbcb6a36060961f92843e_lower.jpg";
+            QueryWrapper<TOutfitLower> tOutfitLowerQueryWrapper = new QueryWrapper<>();
+            tOutfitLowerQueryWrapper.last("limit 1");
+            TOutfitLower tOutfitLower = tOutfitLowerMapper.selectOne(tOutfitLowerQueryWrapper);
+            fileName = tOutfitLower.getFileName();
         } else {}
         String finalUrl = FileUtil.concatUrl(fileName);
         return FileUtil.download(finalUrl, fileName);
