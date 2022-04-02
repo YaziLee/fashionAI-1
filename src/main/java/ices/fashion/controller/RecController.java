@@ -8,15 +8,17 @@ import ices.fashion.constant.ResultMessage;
 import ices.fashion.entity.TBaseMaterial;
 import ices.fashion.entity.TBaseMaterialBrand;
 import ices.fashion.entity.TBaseMaterialCategory;
-import ices.fashion.entity.TBaseSuit;
 import ices.fashion.service.RecService;
-import ices.fashion.service.dto.RecDto;
+import ices.fashion.service.dto.MaterialPageCriteria;
 import ices.fashion.util.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,45 +54,45 @@ public class RecController {
     }
 
     @GetMapping("/get-material-page")
-    public ApiResult<IPage<TBaseMaterial>> getMaterialPage(@RequestParam("categoryId") Integer categoryId, @RequestParam("brandIds") Integer[] brandIds, @RequestParam("currentPage") Integer currentPage, @RequestParam("pageSize") Integer pageSize) {
-        IPage<TBaseMaterial> materials = recService.selectMaterialsByPage(categoryId, brandIds, currentPage, pageSize);
+    public ApiResult<IPage<TBaseMaterial>> getMaterialPage(MaterialPageCriteria materialPageCriteria) {
+        IPage<TBaseMaterial> materials = recService.selectMaterialsByPage(materialPageCriteria);
         return new ApiResult<>(ResultMessage.RESULT_SUCCESS_1, materials);
     }
+
     @PostMapping("/save-suit")
     public ApiResult saveSuit(MultipartHttpServletRequest request) {
         // 解析表单内容
         String name = request.getParameter("name");
         String description = request.getParameter("description");
         String materialIds = request.getParameter("materialIds");
-        if(request.getParameter("customerId") == null)
+        if (request.getParameter("customerId") == null)
             return new ApiResult(ResultMessage.RESULT_ERROR_0);
-        if(request.getParameter("price") == null)
+        if (request.getParameter("price") == null)
             return new ApiResult(ResultMessage.RESULT_ERROR_0);
-        if(request.getParameter("status") == null)
+        if (request.getParameter("status") == null)
             return new ApiResult(ResultMessage.RESULT_ERROR_0);
         Integer customerId = Integer.valueOf(request.getParameter("customerId"));
         BigDecimal price = new BigDecimal(request.getParameter("price"));
         Integer status = Integer.valueOf(request.getParameter("status"));
         MultipartFile multipartFile = request.getFile("file");
-        String imgUrl = fileUtil.uploadMultipartFile(multipartFile); // 上传图片
-        return recService.insertSuit(name, description, materialIds, customerId, price, status, imgUrl);
+        return recService.insertSuit(name, description, materialIds, customerId, price, status, multipartFile);
     }
+
     @GetMapping("get-recommendation-list")
-    public ApiResult<Map<String, Object>> getRecommendationList(@RequestParam("upper") Integer upperId, @RequestParam("bottom") Integer bottomId, @RequestParam("bag") Integer bagId, @RequestParam("shoe") Integer shoeId, @RequestParam("matchType") String matchType) {
+    public ApiResult<Map<String, Object>> getRecommendationList(@RequestParam("matchType") String matchType, @RequestParam("itemIds") List<Integer> itemIds) throws IOException {
+        if (itemIds.size() != 3)
+            return new ApiResult<>(ResultMessage.RESULT_ERROR_0);
         Map<String, Object> resultMap = new HashMap<>(2);
-        List<Integer> idsList = new ArrayList<>();
-        if (upperId != null)
-            idsList.add(upperId);
-        if (bottomId != null)
-            idsList.add(bottomId);
-        if (bagId != null)
-            idsList.add(bagId);
-        if (shoeId != null)
-            idsList.add(shoeId);
-        if (idsList.size() != 3) // 必须有三个输入
-            return new ApiResult<>(ResultMessage.RESULT_ERROR_0, resultMap);
-        List<RecDto> recommendations = recService.reqRecommendations(idsList, matchType);
+        List<TBaseMaterial> recommendations = recService.reqRecommendations(itemIds, matchType);
         resultMap.put("recommendations", recommendations);
+        return new ApiResult<>(ResultMessage.RESULT_SUCCESS_1, resultMap);
+    }
+
+    @GetMapping("get-rec-categories")
+    public ApiResult<Map<String, Object>> getRecCategories() {
+        Map<String, Object> resultMap = new HashMap<>(2);
+        Map<Integer, String> recCategoryMap = recService.selectRecCategoryMap();
+        resultMap.put("recCategoryMap", recCategoryMap);
         return new ApiResult<>(ResultMessage.RESULT_SUCCESS_1, resultMap);
     }
 }

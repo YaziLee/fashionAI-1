@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RecDto {
-//    和接收到的名字一致
-    private Integer id;
-    private String filename;
+public class OutfitGANDto {
+
+    private String bagUrl;
+    private String shoesUrl;
+    private String lowerUrl;
 }

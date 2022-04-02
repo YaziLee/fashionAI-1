@@ -35,6 +35,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -79,7 +84,7 @@ public class FileUtil {
 
     public static byte[] readInputStream(InputStream is) {
         ByteArrayOutputStream writer = new ByteArrayOutputStream();
-        byte[] buff = new byte[1024 * 2];
+        byte[] buff  = new byte[1024 * 2];
         int len = 0;
         try {
             while ((len = is.read(buff)) != -1) {
@@ -93,6 +98,7 @@ public class FileUtil {
     }
 
 
+
     public static String getDownloadUrl(String targetUrl) {
         Auth auth = Auth.create(QiniuCloudConst.ACCESS_KEY, QiniuCloudConst.SECRET_KEY);
         return auth.privateDownloadUrl(targetUrl);
@@ -103,9 +109,16 @@ public class FileUtil {
         return String.format("%s/%s", QiniuCloudConst.DOMAIN_BUCKET, encodeFileName);
     }
 
+    public static String concatUrlwithoutEncoding(String fileName) {
+        String ext = "png";
+        return String.format("%s/%s.%s", QiniuCloudConst.DOMAIN_BUCKET, fileName, ext);
+    }
+    public static String url2FileName(String url) {
+        return url.substring(url.lastIndexOf('/') + 1);
+    }
+
     /**
      * 向 url 发送图像
-     *
      * @param multipartFile
      * @param url
      * @return
@@ -122,7 +135,7 @@ public class FileUtil {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+        MultiValueMap<String, Object> map= new LinkedMultiValueMap<>();
         map.add(name, fileSystemResource);
         HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
         // 发起 Post 请求
@@ -135,7 +148,7 @@ public class FileUtil {
         }
         System.out.println(response.getBody());
 //        程序结束时，删除临时文件
-        deleteFile(excelFile);
+		deleteFile(excelFile);
         return response.getBody();
     }
 
@@ -161,12 +174,12 @@ public class FileUtil {
     private static File createTmpFile(String filename) {
         String path = Thread.currentThread().getContextClassLoader().getResource("").getPath() + "tmp";
         File dir = new File(path);
-        if (!dir.exists()) {//不存在则创建路径
+        if(!dir.exists()){//不存在则创建路径
             dir.mkdirs();
         }
         String filepath = path + sepa + filename;
         File file = new File(filepath);
-        if (!file.exists()) {
+        if(!file.exists()) {
             try {
                 file.createNewFile();
             } catch (IOException e) {
@@ -225,7 +238,7 @@ public class FileUtil {
 //            System.out.println("key is: " + putRet.key);
 //            System.out.println("hash is: " + putRet.hash);
             return true;
-        } catch (QiniuException ex) {
+        } catch (QiniuException  ex) {
             com.qiniu.http.Response r = ex.response;
             System.err.println(r.toString());
             log.error(r.toString());
@@ -251,10 +264,38 @@ public class FileUtil {
         }
     }
 
+    public static String pictureFileToBase64String(File picture) throws IOException {
+        String res = "";
+        try (FileInputStream input = new FileInputStream(picture)) {
+            List<Byte> buffer = new ArrayList<>();
+            int n;
+            while ((n = input.read()) != -1) {
+                buffer.add((byte)n);
+            }
+            byte[] pictureBytes = new byte[buffer.size()];
+            int idx = 0;
+            for (Byte b : buffer) {
+                pictureBytes[idx++] = b;
+            }
+
+            //base64编码后用utf-8编码成字符串
+            byte[] tmp = Base64.getEncoder().encode(pictureBytes);
+            res = new String(tmp, StandardCharsets.UTF_8);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    public static byte[] base64StringToBytes(String s) {
+        return Base64.getDecoder().decode(s);
+    }
+
     /**
      * 上传multipartFile到七牛云
      */
-    public String uploadMultipartFile(MultipartFile multipartFile) {
+    public static String uploadMultipartFile(MultipartFile multipartFile) {
         if (multipartFile != null && StringUtils.isNotEmpty(multipartFile.getOriginalFilename())) {
             try {
 

@@ -1,4 +1,4 @@
-package ices.fashion.service.dto;
+package ices.fashion.entity.collaborate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RecDto {
-//    和接收到的名字一致
+public class ColUser {
     private Integer id;
-    private String filename;
+    private String username;
 }

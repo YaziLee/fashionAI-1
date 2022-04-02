@@ -4,20 +4,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecCriteria {
-    private Integer upperId;
-    private Integer bottomId;
-    private Integer shoeId;
-    private Integer bagId;
+    private Integer id;
+    private String image1;
+    private String image2;
+    private String image3;
     private String matchType;
-    public void init() {
-        this.upperId = null;
-        this.bottomId = null;
-        this.shoeId = null;
-        this.bagId = null;
-        this.matchType = null;
+    public void init(String image1, String image2, String image3, String matchType) {
+        this.id = 1;
+        this.image1 = image1;
+        this.image2 = image2;
+        this.image3 = image3;
+        this.matchType = matchType;
     }
 }

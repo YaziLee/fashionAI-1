@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RecDto {
-//    和接收到的名字一致
+public class RenderGANModelDto {
+
+    private String image;
     private Integer id;
-    private String filename;
 }
