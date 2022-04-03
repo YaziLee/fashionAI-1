@@ -159,6 +159,8 @@ public class OutfitGANServiceImpl implements OutfitGANService {
         String lowerFileName = "outfit_gan_lower_" + System.currentTimeMillis() + ".jpg";
         List<OutfitGANModelDto> outfitGANModelDtoList = gson.fromJson(responseEntity.getBody(),
                 new TypeToken<List<OutfitGANModelDto>>(){}.getType());
+//        System.out.println(responseEntity.getStatusCode());
+//        System.out.println(responseEntity.getHeaders());
         OutfitGANModelDto resp = outfitGANModelDtoList.get(0);
 
         byte[] shoesBase64decodedBytes = FileUtil.base64StringToBytes(resp.getImageShoes());
