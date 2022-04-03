@@ -2,6 +2,7 @@ package ices.fashion.service;
 
 import ices.fashion.constant.ApiResult;
 import ices.fashion.service.dto.VtoDto;
+import ices.fashion.service.dto.VtonInitDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -19,4 +20,6 @@ public interface VtoService {
 
     // 进行衣服试穿
     String tryOn();
+
+    public ApiResult<VtonInitDto> init();
 }

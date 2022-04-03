@@ -2,7 +2,9 @@ package ices.fashion.controller;
 
 import ices.fashion.constant.ApiResult;
 import ices.fashion.service.VtoService;
+import ices.fashion.service.dto.RenderInitDto;
 import ices.fashion.service.dto.VtoDto;
+import ices.fashion.service.dto.VtonInitDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +31,11 @@ public class VtoController {
         ApiResult<VtoDto> res = vtoService.virtualTryOn(clothFileName, modelFileName);
         System.out.println(sdf.format(new Date()));
         return res;
+    }
+
+    @GetMapping("/init")
+    public ApiResult<VtonInitDto> init() {
+        return vtoService.init();
     }
 
 }
