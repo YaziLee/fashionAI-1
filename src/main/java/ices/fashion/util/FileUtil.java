@@ -2,6 +2,7 @@ package ices.fashion.util;
 
 import com.google.gson.Gson;
 import com.qiniu.common.QiniuException;
+import com.qiniu.common.Zone;
 import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
 import com.qiniu.storage.Region;
@@ -15,6 +16,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Base64Utils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -36,8 +40,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Slf4j
+@Component
 public class FileUtil {
 
     private static final String sepa = File.separator;
@@ -102,6 +109,14 @@ public class FileUtil {
     public static String concatUrl(String fileName) throws UnsupportedEncodingException {
         String encodeFileName = URLEncoder.encode(fileName, "utf-8").replace("+", "%20");
         return String.format("%s/%s", QiniuCloudConst.DOMAIN_BUCKET, encodeFileName);
+    }
+
+    public static String concatUrlwithoutEncoding(String fileName) {
+        String ext = "png";
+        return String.format("%s/%s.%s", QiniuCloudConst.DOMAIN_BUCKET, fileName, ext);
+    }
+    public static String url2FileName(String url) {
+        return url.substring(url.lastIndexOf('/') + 1);
     }
 
     /**
@@ -277,5 +292,43 @@ public class FileUtil {
 
     public static byte[] base64StringToBytes(String s) {
         return Base64.getDecoder().decode(s);
+    }
+
+    /**
+     * 上传multipartFile到七牛云
+     */
+    public static String uploadMultipartFile(MultipartFile multipartFile) {
+        if (multipartFile != null && StringUtils.isNotEmpty(multipartFile.getOriginalFilename())) {
+            try {
+
+                // 密钥配置
+                Auth auth = Auth.create(QiniuCloudConst.ACCESS_KEY, QiniuCloudConst.SECRET_KEY);
+                // 创建上传对象，表示指定Zone对象的配置类；zone2：华南地区
+                Configuration configuration = new Configuration(Zone.zone2());
+                UploadManager uploadManager = new UploadManager(configuration);
+
+                // 文件名：yyyyMMdd_timeStamp_OriginalFileName
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+                String date = simpleDateFormat.format(new Date());
+                String fileName = date + "_" + System.currentTimeMillis() + "_"
+                        + Base64Utils.encodeToString(multipartFile.getOriginalFilename().getBytes("UTF-8"));
+                String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+                if (StringUtils.isEmpty(extension)) {
+                    extension = "png";
+                }
+                String fullName = fileName + "." + extension;
+
+                InputStream inputStream = multipartFile.getInputStream();
+                // 调用put方法上传
+                com.qiniu.http.Response response = uploadManager.put(inputStream, fullName, auth.uploadToken(QiniuCloudConst.BUCKET), null, null);
+                String url = QiniuCloudConst.DOMAIN_BUCKET + "/" + fullName;
+                LOGGER.info("image url: {}", url);
+                return url;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return null;
     }
 }
