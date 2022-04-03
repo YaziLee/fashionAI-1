@@ -1,4 +1,4 @@
-package ices.fashion.service.dto;
+package ices.fashion.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class VtoDto {
-    private String fileUrl;
+public class TVton {
+
+    private Integer id;
+    private String fileName;
+    private String category;
 }

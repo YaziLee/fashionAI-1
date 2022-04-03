@@ -3,21 +3,33 @@ package ices.fashion.service.impl;
 import ices.fashion.constant.ApiResult;
 import ices.fashion.constant.QiniuCloudConst;
 import ices.fashion.constant.VtoModelConst;
+import ices.fashion.entity.TMmc;
+import ices.fashion.entity.TVton;
+import ices.fashion.mapper.TVtonMapper;
 import ices.fashion.service.VtoService;
+import ices.fashion.service.dto.MMCGANInitDto;
 import ices.fashion.service.dto.VtoDto;
+import ices.fashion.service.dto.VtonInitDto;
 import ices.fashion.util.FileUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
 public class VtoServiceImpl implements VtoService {
+
+    @Autowired
+    private TVtonMapper tVtonMapper;
 
 
     @Override
@@ -72,11 +84,46 @@ public class VtoServiceImpl implements VtoService {
     public String tryOn() {
         String tryonUrl = VtoModelConst.BASE_URL + VtoModelConst.TRY_ON_PATH;
         // 发起 get 请求
-        RestTemplate restTemplate = new RestTemplate();
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(90000); //90s
+        RestTemplate restTemplate = new RestTemplate(factory);
         ResponseEntity<byte[]> responseEntity = restTemplate.exchange(tryonUrl, HttpMethod.GET, null, byte[].class);
 
         String filename = "vton_" + System.currentTimeMillis() + ".png";
         FileUtil.createFile(filename, responseEntity.getBody());
         return filename;
+    }
+
+    @Override
+    public ApiResult<VtonInitDto> init() {
+        List<TVton> tVtonList = tVtonMapper.selectList(null);
+        VtonInitDto vtonInitDto = new VtonInitDto();
+        vtonInitDto.setClothMaleUpperLongList(tVtonList.stream()
+                .filter(e -> e.getCategory().equals(VtoModelConst.CLOTH_MALE_UPPER_LONG))
+                .map(TVton::getFileName).collect(Collectors.toList()));
+        vtonInitDto.setClothMaleUpperShortList(tVtonList.stream()
+                .filter(e -> e.getCategory().equals(VtoModelConst.CLOTH_MALE_UPPER_SHORT))
+                .map(TVton::getFileName).collect(Collectors.toList()));
+        vtonInitDto.setImageMaleUpperLongList(tVtonList.stream()
+                .filter(e -> e.getCategory().equals(VtoModelConst.IMAGE_MALE_UPPER_LONG))
+                .map(TVton::getFileName).collect(Collectors.toList()));
+        vtonInitDto.setImageMaleUpperShortList(tVtonList.stream()
+                .filter(e -> e.getCategory().equals(VtoModelConst.IMAGE_MALE_UPPER_SHORT))
+                .map(TVton::getFileName).collect(Collectors.toList()));
+        vtonInitDto.setClothFemaleUpperNoList(tVtonList.stream()
+                .filter(e -> e.getCategory().equals(VtoModelConst.CLOTH_FEMALE_UPPER_NO))
+                .map(TVton::getFileName).collect(Collectors.toList()));
+        vtonInitDto.setClothFemaleUpperShortList(tVtonList.stream()
+                .filter(e -> e.getCategory().equals(VtoModelConst.CLOTH_FEMALE_UPPER_SHORT))
+                .map(TVton::getFileName).collect(Collectors.toList()));
+        vtonInitDto.setImageFemaleUpperNoList(tVtonList.stream()
+                .filter(e -> e.getCategory().equals(VtoModelConst.IMAGE_FEMALE_UPPER_NO))
+                .map(TVton::getFileName).collect(Collectors.toList()));
+        vtonInitDto.setImageFemaleUpperShortList(tVtonList.stream()
+                .filter(e -> e.getCategory().equals(VtoModelConst.IMAGE_FEMALE_UPPER_SHORT))
+                .map(TVton::getFileName).collect(Collectors.toList()));
+        ApiResult<VtonInitDto> res = new ApiResult(200, "success");
+        res.setData(vtonInitDto);
+        return res;
     }
 }
