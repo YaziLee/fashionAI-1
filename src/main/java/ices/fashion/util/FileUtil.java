@@ -62,6 +62,8 @@ public class FileUtil {
         System.out.println(url);
         Request req = new Request.Builder().url(url).build();
         Response resp = null;
+        String[] fileNameSplitArray = fileName.split("/");
+        fileName = fileNameSplitArray[fileNameSplitArray.length - 1];
         try {
             resp = client.newCall(req).execute();
 //            System.out.println(resp.isSuccessful());

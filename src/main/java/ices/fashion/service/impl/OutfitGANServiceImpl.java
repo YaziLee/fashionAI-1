@@ -1,14 +1,25 @@
 package ices.fashion.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import ices.fashion.constant.ApiResult;
 import ices.fashion.constant.GANConst;
 import ices.fashion.constant.QiniuCloudConst;
+import ices.fashion.entity.TOutfitBag;
+import ices.fashion.entity.TOutfitLower;
+import ices.fashion.entity.TOutfitShoes;
+import ices.fashion.entity.TOutfitUpper;
+import ices.fashion.mapper.TOutfitBagMapper;
+import ices.fashion.mapper.TOutfitLowerMapper;
+import ices.fashion.mapper.TOutfitShoesMapper;
+import ices.fashion.mapper.TOutfitUpperMapper;
 import ices.fashion.service.OutfitGANService;
 import ices.fashion.service.dto.*;
 import ices.fashion.util.FileUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,9 +28,22 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OutfitGANServiceImpl implements OutfitGANService {
+
+    @Autowired
+    private TOutfitBagMapper tOutfitBagMapper;
+
+    @Autowired
+    private TOutfitLowerMapper tOutfitLowerMapper;
+
+    @Autowired
+    private TOutfitShoesMapper tOutfitShoesMapper;
+
+    @Autowired
+    private TOutfitUpperMapper tOutfitUpperMapper;
 
     @Override
     public ApiResult<OutfitGANDto> doOutfitGAN(OutfitGANCriteria outfitGANCriteria) throws IOException {
@@ -96,10 +120,28 @@ public class OutfitGANServiceImpl implements OutfitGANService {
         return res;
     }
 
+    @Override
+    public ApiResult<OutfitGANInitDto> init() {
+        List<TOutfitBag> tOutfitBagList = tOutfitBagMapper.selectList(null);
+        List<TOutfitLower> tOutfitLowerList = tOutfitLowerMapper.selectList(null);
+        List<TOutfitShoes> tOutfitShoesList = tOutfitShoesMapper.selectList(null);
+        List<TOutfitUpper> tOutfitUpperList = tOutfitUpperMapper.selectList(null);
+        ApiResult<OutfitGANInitDto> res = new ApiResult(200, "success");
+        res.setData(new OutfitGANInitDto(
+                tOutfitUpperList.stream().map(TOutfitUpper::getFileName).collect(Collectors.toList()),
+                tOutfitShoesList.stream().map(TOutfitShoes::getFileName).collect(Collectors.toList()),
+                tOutfitLowerList.stream().map(TOutfitLower::getFileName).collect(Collectors.toList()),
+                tOutfitBagList.stream().map(TOutfitBag::getFileName).collect(Collectors.toList())));
+        return res;
+    }
+
     private OutfitGANModelDto doGenerate(OutfitGANCriteria outfitGANCriteria) {
 
         String generateUrl = GANConst.OUTFIT_GAN_BASE_URL + GANConst.OUTFIT_GAN;
-        RestTemplate restTemplate = new RestTemplate();
+        //设置超时时间
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setConnectTimeout(12000);
+        RestTemplate restTemplate = new RestTemplate(requestFactory);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         List<MediaType> mediaTypeList = new ArrayList<>();
@@ -134,19 +176,25 @@ public class OutfitGANServiceImpl implements OutfitGANService {
     }
 
     private File getRandomMaskImage(String category) throws UnsupportedEncodingException {
-        /*
-        todo
-        每个样例都要去数据库随机找一个fileName
-        目前写死了
-         */
+
+
         String fileName = null;
 
         if (category.equals(GANConst.SHOES)) {
-            fileName = "001aeb1dc1adbcb6a36060961f92843e_shoes.jpg";
+            QueryWrapper<TOutfitShoes> tOutfitShoesQueryWrapper = new QueryWrapper<>();
+            tOutfitShoesQueryWrapper.last("limit 1");
+            TOutfitShoes tOutfitShoes = tOutfitShoesMapper.selectOne(tOutfitShoesQueryWrapper);
+            fileName = tOutfitShoes.getFileName();
         } else if (category.equals(GANConst.BAG)) {
-            fileName = "001aeb1dc1adbcb6a36060961f92843e_bag.jpg";
+            QueryWrapper<TOutfitBag> tOutfitBagQueryWrapper = new QueryWrapper<>();
+            tOutfitBagQueryWrapper.last("limit 1");
+            TOutfitBag tOutfitBag = tOutfitBagMapper.selectOne(tOutfitBagQueryWrapper);
+            fileName = tOutfitBag.getFileName();
         } else if (category.equals(GANConst.LOWER)) {
-            fileName = "001aeb1dc1adbcb6a36060961f92843e_lower.jpg";
+            QueryWrapper<TOutfitLower> tOutfitLowerQueryWrapper = new QueryWrapper<>();
+            tOutfitLowerQueryWrapper.last("limit 1");
+            TOutfitLower tOutfitLower = tOutfitLowerMapper.selectOne(tOutfitLowerQueryWrapper);
+            fileName = tOutfitLower.getFileName();
         } else {}
         String finalUrl = FileUtil.concatUrl(fileName);
         return FileUtil.download(finalUrl, fileName);

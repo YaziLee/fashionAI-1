@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RenderGANCriteria {
 
+    private String originFileName;
     private String sketchFileName;
     private String colorFileName;
 
@@ -19,6 +20,7 @@ public class RenderGANCriteria {
     public void init() {
         this.id = 1;
         this.sketchFileName = null;
+        this.originFileName = null;
         this.colorFileName = null;
     }
 }
