@@ -1,5 +1,6 @@
 package ices.fashion.service.dto;
 
+import ices.fashion.entity.TVton;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,12 +12,12 @@ import java.util.List;
 @NoArgsConstructor
 public class VtonInitDto {
 
-    private List<String> clothMaleUpperLongList;
-    private List<String> clothMaleUpperShortList;
-    private List<String> imageMaleUpperLongList;
-    private List<String> imageMaleUpperShortList;
-    private List<String> clothFemaleUpperNoList;
-    private List<String> clothFemaleUpperShortList;
-    private List<String> imageFemaleUpperNoList;
-    private List<String> imageFemaleUpperShortList;
+    private List<TVton> clothMaleUpperLongList;
+    private List<TVton> clothMaleUpperShortList;
+    private List<TVton> imageMaleUpperLongList;
+    private List<TVton> imageMaleUpperShortList;
+    private List<TVton> clothFemaleUpperNoList;
+    private List<TVton> clothFemaleUpperShortList;
+    private List<TVton> imageFemaleUpperNoList;
+    private List<TVton> imageFemaleUpperShortList;
 }
