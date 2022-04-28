@@ -16,4 +16,6 @@ public interface CategoryService {
      * 搭配素材种类相关
      */
     List<TBaseMaterialCategory> selectAllCategories();
+
+    List<TBaseMaterialCategory> selectCategoriesByRecType(String recType);
 }

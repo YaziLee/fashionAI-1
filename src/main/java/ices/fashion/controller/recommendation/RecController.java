@@ -35,7 +35,6 @@ public class RecController {
 
     @Autowired
     private RecService recService;
-
     @GetMapping("get-recommendation-list")
     public ApiResult<Map<String, Object>> getRecommendationList(@RequestParam("matchType") String matchType, @RequestParam("itemIds") List<Integer> itemIds) throws IOException {
         if (itemIds.size() != 3)

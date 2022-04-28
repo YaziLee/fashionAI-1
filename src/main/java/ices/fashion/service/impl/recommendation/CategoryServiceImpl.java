@@ -40,4 +40,13 @@ public class CategoryServiceImpl implements CategoryService {
         conditions.put("status", 1);
         return tBaseMaterialCategoryMapper.selectByMap(conditions);
     }
+
+    @Override
+    public List<TBaseMaterialCategory> selectCategoriesByRecType(String recType) {
+        Map<String, Object> conditions = new HashMap<>();
+        conditions.put("status", 1);
+        conditions.put("rec_category", recType);
+        return tBaseMaterialCategoryMapper.selectByMap(conditions);
+    }
+
 }

@@ -1,5 +1,6 @@
 package ices.fashion.service.impl.recommendation;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import ices.fashion.constant.RecConst;
@@ -79,10 +80,16 @@ public class RecServiceImpl implements RecService {
             return new ArrayList<>();
         }
         Map<String, Object> conditions = new HashMap<>();
-        String recUrl = FileUtil.concatUrlwithoutEncoding(recDto.getFilename());
-        conditions.put("img_url", recUrl);
-        LOGGER.info(conditions.toString());
-        return tBaseMaterialMapper.selectByMap(conditions);
+        List<String> filenames = recDto.getFilename();
+        List<String> recUrls = new ArrayList<>();
+        for (String filename: filenames) {
+            String recUrl = FileUtil.concatUrlwithoutEncoding(filename);
+
+            recUrls.add(recUrl);
+        }
+        QueryWrapper<TBaseMaterial> tBaseMaterialQueryWrapper = new QueryWrapper<>();
+        tBaseMaterialQueryWrapper.in("img_url", recUrls);
+        return tBaseMaterialMapper.selectList(tBaseMaterialQueryWrapper);
     }
 
 
