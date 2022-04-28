@@ -100,28 +100,28 @@ public class VtoServiceImpl implements VtoService {
         VtonInitDto vtonInitDto = new VtonInitDto();
         vtonInitDto.setClothMaleUpperLongList(tVtonList.stream()
                 .filter(e -> e.getCategory().equals(VtoModelConst.CLOTH_MALE_UPPER_LONG))
-                .map(TVton::getFileName).collect(Collectors.toList()));
+                .collect(Collectors.toList()));
         vtonInitDto.setClothMaleUpperShortList(tVtonList.stream()
                 .filter(e -> e.getCategory().equals(VtoModelConst.CLOTH_MALE_UPPER_SHORT))
-                .map(TVton::getFileName).collect(Collectors.toList()));
+                .collect(Collectors.toList()));
         vtonInitDto.setImageMaleUpperLongList(tVtonList.stream()
                 .filter(e -> e.getCategory().equals(VtoModelConst.IMAGE_MALE_UPPER_LONG))
-                .map(TVton::getFileName).collect(Collectors.toList()));
+                .collect(Collectors.toList()));
         vtonInitDto.setImageMaleUpperShortList(tVtonList.stream()
                 .filter(e -> e.getCategory().equals(VtoModelConst.IMAGE_MALE_UPPER_SHORT))
-                .map(TVton::getFileName).collect(Collectors.toList()));
+                .collect(Collectors.toList()));
         vtonInitDto.setClothFemaleUpperNoList(tVtonList.stream()
                 .filter(e -> e.getCategory().equals(VtoModelConst.CLOTH_FEMALE_UPPER_NO))
-                .map(TVton::getFileName).collect(Collectors.toList()));
+                .collect(Collectors.toList()));
         vtonInitDto.setClothFemaleUpperShortList(tVtonList.stream()
                 .filter(e -> e.getCategory().equals(VtoModelConst.CLOTH_FEMALE_UPPER_SHORT))
-                .map(TVton::getFileName).collect(Collectors.toList()));
+                .collect(Collectors.toList()));
         vtonInitDto.setImageFemaleUpperNoList(tVtonList.stream()
                 .filter(e -> e.getCategory().equals(VtoModelConst.IMAGE_FEMALE_UPPER_NO))
-                .map(TVton::getFileName).collect(Collectors.toList()));
+                .collect(Collectors.toList()));
         vtonInitDto.setImageFemaleUpperShortList(tVtonList.stream()
                 .filter(e -> e.getCategory().equals(VtoModelConst.IMAGE_FEMALE_UPPER_SHORT))
-                .map(TVton::getFileName).collect(Collectors.toList()));
+                .collect(Collectors.toList()));
         ApiResult<VtonInitDto> res = new ApiResult(200, "success");
         res.setData(vtonInitDto);
         return res;
