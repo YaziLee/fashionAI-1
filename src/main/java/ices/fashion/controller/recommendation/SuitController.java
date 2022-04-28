@@ -38,7 +38,7 @@ public class SuitController {
             return new ApiResult(ResultMessage.RESULT_ERROR_0);
         if (request.getParameter("status") == null)
             return new ApiResult(ResultMessage.RESULT_ERROR_0);
-        Integer customerId = Integer.valueOf(request.getParameter("customerId"));
+        Integer customerId = Integer.parseInt(request.getParameter("customerId").trim());
         BigDecimal price = new BigDecimal(request.getParameter("price"));
         Integer status = Integer.valueOf(request.getParameter("status"));
         MultipartFile multipartFile = request.getFile("file");

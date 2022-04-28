@@ -33,4 +33,11 @@ public class CategoryController {
         resultMap.put("categories", categories);
         return new ApiResult<>(ResultMessage.RESULT_SUCCESS_1, resultMap);
     }
+    @GetMapping("/get-category-by-rec-type")
+    public ApiResult<Map<String, Object>> getCategoryByRecType(@RequestParam("recType") String recType) {
+        Map<String, Object> resultMap = new HashMap<>(2);
+        List<TBaseMaterialCategory> categories = categoryService.selectCategoriesByRecType(recType);
+        resultMap.put("categories", categories);
+        return new ApiResult<>(ResultMessage.RESULT_SUCCESS_1, resultMap);
+    }
 }

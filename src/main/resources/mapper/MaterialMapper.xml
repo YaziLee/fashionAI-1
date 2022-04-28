@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+<mapper namespace="ices.fashion.mapper.TBaseMaterialMapper">
+    <update id="deleteMaterials">
+        UPDATE t_base_material SET `status` = 0 WHERE id IN
+        <foreach collection="ids" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </update>
+    <update id="recoverMaterials">
+        UPDATE t_base_material SET `status` = 1 WHERE id IN
+        <foreach collection="ids" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </update>
+</mapper>

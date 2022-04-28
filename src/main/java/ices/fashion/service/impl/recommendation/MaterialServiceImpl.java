@@ -14,11 +14,13 @@ import ices.fashion.mapper.TBaseMaterialCategoryMapper;
 import ices.fashion.mapper.TBaseMaterialMapper;
 import ices.fashion.mapper.TBaseSuitMapper;
 import ices.fashion.service.MaterialService;
+import ices.fashion.service.RecService;
 import ices.fashion.service.dto.MaterialPageCriteria;
 import ices.fashion.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.system.ApplicationPid;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -51,4 +53,34 @@ public class MaterialServiceImpl implements MaterialService {
         return tBaseMaterialMapper.selectBatchIds(idsList);
     }
 
+    @Override
+    public ApiResult deleteMaterials(List<Integer> ids) throws Exception {
+        Integer status = tBaseMaterialMapper.deleteMaterials(ids);
+        if (status < 1)
+            throw new Exception();
+        return new ApiResult(ResultMessage.RESULT_SUCCESS_1);
+    }
+
+    @Override
+    public ApiResult recoverMaterials(List<Integer> ids) throws Exception {
+        Integer status = tBaseMaterialMapper.recoverMaterials(ids);
+        if (status < 1)
+                throw new Exception();
+        return new ApiResult(ResultMessage.RESULT_SUCCESS_1);
+    }
+
+    @Override
+    public ApiResult saveMaterial(TBaseMaterial tBaseMaterial, MultipartFile multipartFile) {
+        // 上传图片
+        String imgUrl = FileUtil.uploadMultipartFile(multipartFile);
+        tBaseMaterial.setImgUrl(imgUrl);
+        if (tBaseMaterial.getId() == null) {
+            // 新增
+            tBaseMaterialMapper.insert(tBaseMaterial);
+        } else {
+            // 修改
+            tBaseMaterialMapper.updateById(tBaseMaterial);
+        }
+        return new ApiResult(ResultMessage.RESULT_SUCCESS_1);
+    }
 }
