@@ -128,10 +128,14 @@ public class OutfitGANServiceImpl implements OutfitGANService {
         List<TOutfitUpper> tOutfitUpperList = tOutfitUpperMapper.selectList(null);
         ApiResult<OutfitGANInitDto> res = new ApiResult(200, "success");
         res.setData(new OutfitGANInitDto(
-                tOutfitUpperList.stream().map(TOutfitUpper::getFileName).collect(Collectors.toList()),
-                tOutfitShoesList.stream().map(TOutfitShoes::getFileName).collect(Collectors.toList()),
-                tOutfitLowerList.stream().map(TOutfitLower::getFileName).collect(Collectors.toList()),
-                tOutfitBagList.stream().map(TOutfitBag::getFileName).collect(Collectors.toList())));
+                tOutfitUpperList.stream().filter(e -> e.getDeleted() == 0).map(TOutfitUpper::getFileName)
+                        .collect(Collectors.toList()),
+                tOutfitShoesList.stream().filter(e -> e.getDeleted() == 0).map(TOutfitShoes::getFileName)
+                        .collect(Collectors.toList()),
+                tOutfitLowerList.stream().filter(e -> e.getDeleted() == 0).map(TOutfitLower::getFileName)
+                        .collect(Collectors.toList()),
+                tOutfitBagList.stream().filter(e -> e.getDeleted() == 0).map(TOutfitBag::getFileName)
+                        .collect(Collectors.toList())));
         return res;
     }
 
