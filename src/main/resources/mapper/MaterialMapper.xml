@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
 <mapper namespace="ices.fashion.mapper.TBaseMaterialMapper">
+    <resultMap id="BaseResultMap" type="ices.fashion.entity.TBaseMaterial">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="img_url" property="imgUrl" jdbcType="VARCHAR"/>
+        <result column="link_url" property="linkUrl" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="DECIMAL"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="category_id" property="categoryId" jdbcType="INTEGER"/>
+        <result column="brand_id" property="brandId" jdbcType="INTEGER"/>
+        <result column="target_population" property="targetPopulation" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="MaterialPageResultMap" extends="BaseResultMap" type="ices.fashion.service.dto.MaterialPageDto">
+        <result column="category_name" property="categoryName" jdbcType="VARCHAR"/>
+        <result column="brand_name" property="brandName" jdbcType="VARCHAR"/>
+        <result column="rec_category" property="recCategory" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="countResultMap" type="java.lang.Integer">
+        <result column="total"/>
+    </resultMap>
     <update id="deleteMaterials">
         UPDATE t_base_material SET `status` = 0 WHERE id IN
         <foreach collection="ids" item="idItem" open="(" separator="," close=")">
@@ -13,4 +32,94 @@
             #{idItem}
         </foreach>
     </update>
+    <select id="selectMaterialDtoByImgUrls" resultMap="MaterialPageResultMap">
+        SELECT
+        m.id, m.img_url, m.price, m.link_url, m.description, m.target_population, m.status, mc.category_name, mc.id category_id,
+        mc.rec_category rec_category, mb.brand_name, mb.id brand_id
+        FROM t_base_material m
+        LEFT JOIN t_base_material_category mc ON m.category_id = mc.id
+        LEFT JOIN t_base_material_brand mb ON m.brand_id = mb.id
+        <where>
+            m.`status` = 1
+            AND mc.`status` = 1
+            AND mb.`status` = 1
+            <if test="imgUrls.size() > 0">
+                AND m.`img_url` IN
+                <foreach collection="imgUrls" item="urlItem" open="(" separator="," close=")">
+                    #{urlItem}
+                </foreach>
+            </if>
+            <if test="imgUrls.size() == 0">
+                AND 1=0
+            </if>
+        </where>
+    </select>
+    <select id="selectMaterialDtoByIds" resultMap="MaterialPageResultMap">
+        SELECT
+        m.id, m.img_url, m.price, m.link_url, m.description, m.target_population, m.status, mc.category_name, mc.id category_id,
+        mc.rec_category rec_category, mb.brand_name, mb.id brand_id
+        FROM t_base_material m
+        LEFT JOIN t_base_material_category mc ON m.category_id = mc.id
+        LEFT JOIN t_base_material_brand mb ON m.brand_id = mb.id
+        <where>
+            mc.`status` = 1
+            AND mb.`status` = 1
+            <if test="status != null">
+                AND m.`status` = #{status}
+            </if>
+            <if test="ids.size() > 0">
+                AND m.`id` IN
+                <foreach collection="ids" item="idItem" open="(" separator="," close=")">
+                    #{idItem}
+                </foreach>
+            </if>
+            <if test="ids.size() == 0">
+                AND 1=0
+            </if>
+        </where>
+    </select>
+    <select id="selectMaterialPage" resultMap="MaterialPageResultMap">
+        SELECT
+        m.id, m.img_url, m.price, m.link_url, m.description, m.target_population, m.status, mc.category_name, mc.id category_id,
+        mc.rec_category rec_category, mb.brand_name, mb.id brand_id
+        FROM t_base_material m
+        LEFT JOIN t_base_material_category mc ON m.category_id = mc.id
+        LEFT JOIN t_base_material_brand mb ON m.brand_id = mb.id
+        <where>
+            AND mc.`status` = 1
+            AND mb.`status` = 1
+            <choose>
+                <when test="materialPageCriteria.status != null">
+                    AND m.`status` = #{materialPageCriteria.status}
+                </when>
+                <otherwise>
+                    AND m.`status` = 1
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="materialPageCriteria.categoryIds != null and materialPageCriteria.categoryIds.size() > 0">
+                    AND m.`category_id` IN
+                    <foreach item="idItem" collection="materialPageCriteria.categoryIds" open="(" separator=","
+                             close=")">
+                        #{idItem}
+                    </foreach>
+                </when>
+                <when test="materialPageCriteria.categoryIds != null and materialPageCriteria.categoryIds.size() == 0">
+                    and 1=0
+                </when>
+            </choose>
+            <choose>
+                <when test="materialPageCriteria.brandIds != null and materialPageCriteria.brandIds.size() > 0">
+                    AND m.`brand_id` IN
+                    <foreach item="idItem" collection="materialPageCriteria.brandIds" open="(" separator="," close=")">
+                        #{idItem}
+                    </foreach>
+                </when>
+                <when test="materialPageCriteria.brandIds != null and materialPageCriteria.brandIds.size() == 0">
+                    and 1=0
+                </when>
+            </choose>
+        </where>
+        ORDER BY m.`id`ASC
+    </select>
 </mapper>

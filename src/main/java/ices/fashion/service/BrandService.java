@@ -15,5 +15,13 @@ public interface BrandService {
     /**
      * 品牌相关
      */
-    List<TBaseMaterialBrand> selectAllBrands();
+    List<TBaseMaterialBrand> selectAllBrands(Integer status);
+
+    ApiResult deleteBrands(List<Integer> ids) throws Exception; // 软删除
+
+    ApiResult recoverBrands(List<Integer> ids) throws Exception; // 撤销删除
+
+    Integer saveBrand (TBaseMaterialBrand tBaseMaterialBrand, MultipartFile multipartFile); // 新增
+
+    List<TBaseMaterialBrand> selectBrandByIds(List<Integer> idList, Integer status);
 }
