@@ -75,19 +75,19 @@ public class RenderGANServiceImpl implements RenderGANService {
         List<TRender> tRenderList = renderMapper.selectList(tRenderQueryWrapper);
         RenderInitDto renderInitDto = new RenderInitDto();
         renderInitDto.setBagList(tRenderList.stream().filter(e -> e.getCategory().equals(GANConst.BAG))
-                .map(TRender::getFileName).collect(Collectors.toList()));
+                .filter(e -> e.getDeleted() == 0).map(TRender::getFileName).collect(Collectors.toList()));
         renderInitDto.setHatList(tRenderList.stream().filter(e -> e.getCategory().equals(GANConst.HAT))
-                .map(TRender::getFileName).collect(Collectors.toList()));
+                .filter(e -> e.getDeleted() == 0).map(TRender::getFileName).collect(Collectors.toList()));
         renderInitDto.setJacketList(tRenderList.stream().filter(e -> e.getCategory().equals(GANConst.JACKET))
-                .map(TRender::getFileName).collect(Collectors.toList()));
+                .filter(e -> e.getDeleted() == 0).map(TRender::getFileName).collect(Collectors.toList()));
         renderInitDto.setJeansList(tRenderList.stream().filter(e -> e.getCategory().equals(GANConst.JEANS))
-                .map(TRender::getFileName).collect(Collectors.toList()));
+                .filter(e -> e.getDeleted() == 0).map(TRender::getFileName).collect(Collectors.toList()));
         renderInitDto.setShortsList(tRenderList.stream().filter(e -> e.getCategory().equals(GANConst.SHORTS))
-                .map(TRender::getFileName).collect(Collectors.toList()));
+                .filter(e -> e.getDeleted() == 0).map(TRender::getFileName).collect(Collectors.toList()));
         renderInitDto.setSkirtList(tRenderList.stream().filter(e -> e.getCategory().equals(GANConst.SKIRT))
-                .map(TRender::getFileName).collect(Collectors.toList()));
+                .filter(e -> e.getDeleted() == 0).map(TRender::getFileName).collect(Collectors.toList()));
         renderInitDto.setTopList(tRenderList.stream().filter(e -> e.getCategory().equals(GANConst.TOP))
-                .map(TRender::getFileName).collect(Collectors.toList()));
+                .filter(e -> e.getDeleted() == 0).map(TRender::getFileName).collect(Collectors.toList()));
 
         ApiResult<RenderInitDto> res = new ApiResult(200, "success");
         res.setData(renderInitDto);

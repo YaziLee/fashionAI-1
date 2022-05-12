@@ -13,4 +13,5 @@ public class TRender {
     private String fileName;
     private String category;
     private String type;
+    private Integer deleted;
 }

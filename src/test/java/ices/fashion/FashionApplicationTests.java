@@ -66,6 +66,9 @@ class FashionApplicationTests {
     @Autowired
     private TOutfitUpperMapper tOutfitUpperMapper;
 
+    @Autowired
+    private RenderMapper renderMapper;
+
     @Test
     void contextLoads() {
     }
@@ -209,6 +212,30 @@ class FashionApplicationTests {
             tmp.setId(i);
             tOutfitShoesMapper.insert(tmp);
             i++;
+        }
+    }
+
+    @Test
+    void modifyRenderData() {
+        String[] dirList = {"C:\\Users\\HIT\\Documents\\WeChat Files\\wxid_pdslqg4qx9g632\\FileStorage\\File\\2022-05\\renderimage\\real",
+        "C:\\Users\\HIT\\Documents\\WeChat Files\\wxid_pdslqg4qx9g632\\FileStorage\\File\\2022-05\\renderimage\\sketch"};
+        String[] typeList = {"origin", "sketch"};
+        int i = 161;
+        for (int idx = 0; idx < 2; idx++) {
+            File file = new File(dirList[idx]);
+            String type = typeList[idx];
+            File[] files = file.listFiles();
+            for (File f : files) {
+                System.out.println(f.getName());
+                TRender tmp = new TRender();
+                tmp.setFileName("fashion/render/" + type + "/" + f.getName());
+                tmp.setDeleted(0);
+                tmp.setId(i);
+                tmp.setType(type);
+                tmp.setCategory("top");
+                renderMapper.insert(tmp);
+                i++;
+            }
         }
     }
 
