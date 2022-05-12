@@ -38,7 +38,7 @@ public class ColVersionServiceImpl implements ColVersionService {
             //传给前端的数据只保留到天
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             String date = df.format(colVersion.getCreateTime());
-            ColVersionDto dto = new ColVersionDto(id,colVersion.getCanvas(),colVersion.getImage(),parent,date,new ArrayList<>());
+            ColVersionDto dto = new ColVersionDto(id,colVersion.getCanvas(),colVersion.getBackCanvas(),colVersion.getImage(),colVersion.getBackImage(),parent,date,new ArrayList<>());
             if(id == parent){
                 res.set(0,dto);
                 mp.put(id,0);
@@ -81,5 +81,25 @@ public class ColVersionServiceImpl implements ColVersionService {
         }
 
 //        System.out.println(colVersion);
+    }
+
+    @Override
+    public void insertVersionDouble(int pid,String canvas,String backCanvas,String frontImage,String backImage,int parent){
+        ColVersion colVersion = new ColVersion();
+        colVersion.setPid(pid);
+        colVersion.setCanvas(canvas);
+        colVersion.setBackCanvas(backCanvas);
+        colVersion.setImage(frontImage);
+        colVersion.setBackImage(backImage);
+        colVersion.setParentVersion(parent);
+        colVersion.setCreateTime(new Timestamp(System.currentTimeMillis()));
+
+        Integer result = colVersionMapper.insert(colVersion);
+
+        if(parent == -1){
+            int id = colVersion.getId();
+            colVersion.setParentVersion(id);
+            colVersionMapper.updateById(colVersion);
+        }
     }
 }
