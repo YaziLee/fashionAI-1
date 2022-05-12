@@ -58,34 +58,34 @@ public class OutfitGANServiceImpl implements OutfitGANService {
 
         String upperFinalUrl = FileUtil.concatUrl(upperFileName);
         File upper = FileUtil.download(upperFinalUrl, upperFileName);
+        outfitGANCriteria.setImage(FileUtil.pictureFileToBase64String(upper));
+
         if (shoesFileName != null && !shoesFileName.isEmpty()) {
             String shoesFinalUrl = FileUtil.concatUrl(shoesFileName);
             shoes = FileUtil.download(shoesFinalUrl, shoesFileName);
         }
+        if (shoes == null) {
+            shoes = getRandomMaskImage(GANConst.SHOES);
+        }
+        outfitGANCriteria.setMaskShoes(FileUtil.pictureFileToBase64String(shoes));
+
         if (lowerFileName != null && !lowerFileName.isEmpty()) {
             String lowerFinalUrl = FileUtil.concatUrl(lowerFileName);
             lower = FileUtil.download(lowerFinalUrl, lowerFileName);
         }
+        if (lower == null) {
+            lower = getRandomMaskImage(GANConst.LOWER);
+        }
+        outfitGANCriteria.setMaskLower(FileUtil.pictureFileToBase64String(lower));
+
         if (bagFileName != null && !bagFileName.isEmpty()) {
             String bagFinalUrl = FileUtil.concatUrl(bagFileName);
             bag = FileUtil.download(bagFinalUrl, bagFileName);
         }
-
-        //三个掩码图片没有选择就从数据库随机分配
-        if (shoes == null) {
-            shoes = getRandomMaskImage(GANConst.SHOES);
-        }
-        if (lower == null) {
-            lower = getRandomMaskImage(GANConst.LOWER);
-        }
         if (bag == null) {
             bag = getRandomMaskImage(GANConst.BAG);
         }
-        outfitGANCriteria.setImage(FileUtil.pictureFileToBase64String(upper));
-        outfitGANCriteria.setMaskShoes(FileUtil.pictureFileToBase64String(shoes));
-        outfitGANCriteria.setMaskLower(FileUtil.pictureFileToBase64String(lower));
         outfitGANCriteria.setMaskBag(FileUtil.pictureFileToBase64String(bag));
-
 
         //step2 调用模型
         OutfitGANModelDto outfitGANModelDto = doGenerate(outfitGANCriteria);
@@ -181,6 +181,7 @@ public class OutfitGANServiceImpl implements OutfitGANService {
 
     }
 
+    //无掩码图像后端随机给一个数据库中的
     private File getRandomMaskImage(String category) throws UnsupportedEncodingException {
 
 
