@@ -11,4 +11,5 @@ public class TOutfitLower {
 
     private Integer id;
     private String fileName;
+    Integer deleted;
 }

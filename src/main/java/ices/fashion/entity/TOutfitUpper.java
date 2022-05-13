@@ -11,4 +11,5 @@ public class TOutfitUpper {
 
     private Integer id;
     private String fileName;
+    Integer deleted;
 }

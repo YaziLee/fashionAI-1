@@ -11,4 +11,5 @@ public class TOutfitBag {
 
     private Integer id;
     private String fileName;
+    Integer deleted;
 }

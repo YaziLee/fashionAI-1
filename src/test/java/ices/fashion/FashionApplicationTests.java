@@ -2,11 +2,11 @@ package ices.fashion;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import ices.fashion.constant.ApiResult;
-import ices.fashion.entity.TMmc;
+import ices.fashion.entity.*;
 import ices.fashion.entity.collaborate.ColComment;
 import ices.fashion.entity.collaborate.ColCommentQuery;
 import ices.fashion.entity.collaborate.ColProject;
-import ices.fashion.mapper.MMCGANMapper;
+import ices.fashion.mapper.*;
 import ices.fashion.mapper.collaborate.ColCommentMapper;
 import ices.fashion.mapper.collaborate.ColProjectMapper;
 import ices.fashion.mapper.collaborate.ColVersionMapper;
@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.File;
 import java.util.List;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -52,6 +53,21 @@ class FashionApplicationTests {
 
     @Autowired
     private MMCGANMapper mmcganMapper;
+
+    @Autowired
+    private TOutfitLowerMapper tOutfitLowerMapper;
+
+    @Autowired
+    private TOutfitBagMapper tOutfitBagMapper;
+
+    @Autowired
+    private TOutfitShoesMapper tOutfitShoesMapper;
+
+    @Autowired
+    private TOutfitUpperMapper tOutfitUpperMapper;
+
+    @Autowired
+    private RenderMapper renderMapper;
 
     @Test
     void contextLoads() {
@@ -180,6 +196,47 @@ class FashionApplicationTests {
         String userName="zhangsan";
         int id = colUserService.login(phone,userName);
         System.out.println("colLogin "+id);
+    }
+
+    @Test
+    void modifyOutfitData() {
+        String dir = "C:\\Users\\81481\\Documents\\WeChat Files\\wxid_pdslqg4qx9g632\\FileStorage\\File\\2022-05\\outfitGANimage\\shoes-seg";
+        File file = new File(dir);
+        File[] files = file.listFiles();
+        int i = 31;
+        for (File f : files) {
+            System.out.println(f.getName());
+            TOutfitShoes tmp = new TOutfitShoes();
+            tmp.setFileName("fashion/outfit-gan/shoes/" + f.getName());
+            tmp.setDeleted(0);
+            tmp.setId(i);
+            tOutfitShoesMapper.insert(tmp);
+            i++;
+        }
+    }
+
+    @Test
+    void modifyRenderData() {
+        String[] dirList = {"C:\\Users\\HIT\\Documents\\WeChat Files\\wxid_pdslqg4qx9g632\\FileStorage\\File\\2022-05\\renderimage\\real",
+        "C:\\Users\\HIT\\Documents\\WeChat Files\\wxid_pdslqg4qx9g632\\FileStorage\\File\\2022-05\\renderimage\\sketch"};
+        String[] typeList = {"origin", "sketch"};
+        int i = 161;
+        for (int idx = 0; idx < 2; idx++) {
+            File file = new File(dirList[idx]);
+            String type = typeList[idx];
+            File[] files = file.listFiles();
+            for (File f : files) {
+                System.out.println(f.getName());
+                TRender tmp = new TRender();
+                tmp.setFileName("fashion/render/" + type + "/" + f.getName());
+                tmp.setDeleted(0);
+                tmp.setId(i);
+                tmp.setType(type);
+                tmp.setCategory("top");
+                renderMapper.insert(tmp);
+                i++;
+            }
+        }
     }
 
 }

@@ -11,4 +11,5 @@ public class TOutfitShoes {
 
     private Integer id;
     private String fileName;
+    Integer deleted;
 }
