@@ -69,6 +69,15 @@ class FashionApplicationTests {
     @Autowired
     private RenderMapper renderMapper;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private WorkMapper workMapper;
+
+    @Autowired
+    private WorkService workService;
+
     @Test
     void contextLoads() {
     }
@@ -237,6 +246,45 @@ class FashionApplicationTests {
                 i++;
             }
         }
+    }
+
+    @Test
+    void redisTest() {
+        userService.getUserInfo();
+    }
+
+    @Test
+    void testWorkTable() {
+        TWork work = new TWork();
+        work.setCategory("test3");
+        work.setUserName("test3");
+        work.setPhone("test3");
+        System.out.println(workMapper.insert(work));
+//        workMapper.insert(work);
+
+    }
+
+    @Test
+    void testDesign() {
+        ApiResult<DesignDto> res = workService.getUserDesign("test2");
+        DesignDto data = res.getData();
+        System.out.println(data);
+    }
+
+    @Test
+    void testDetail() {
+        ApiResult<WorkDetailDto> res = workService.getWorkDetail(5, "test");
+        WorkDetailDto data = res.getData();
+        System.out.println(data);
+    }
+
+    @Test
+    void testInsert() {
+        TWork work = new TWork();
+        work.setCategory("test3");
+        work.setUserName("test3");
+        work.setPhone("test3");
+        ApiResult res = workService.saveOneWork(work);
     }
 
 }
