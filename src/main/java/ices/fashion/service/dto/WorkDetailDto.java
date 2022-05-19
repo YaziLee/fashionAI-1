@@ -18,6 +18,7 @@ public class WorkDetailDto {
     private String workDescription;
     private String category;
     private String coverUrl;
+    private Integer workShared;
     private Timestamp createTime;
 
     public WorkDetailDto(TWork work) {
@@ -27,6 +28,7 @@ public class WorkDetailDto {
         this.workDescription = work.getWorkDescription();
         this.category = work.getCategory();
         this.coverUrl = work.getCoverUrl();
+        this.workShared = work.getWorkShared();
         this.createTime = work.getCreateTime();
     }
 }

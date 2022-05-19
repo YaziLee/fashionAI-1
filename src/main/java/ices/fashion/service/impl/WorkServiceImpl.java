@@ -6,8 +6,10 @@ import ices.fashion.constant.WorkConst;
 import ices.fashion.entity.TWork;
 import ices.fashion.mapper.WorkMapper;
 import ices.fashion.service.WorkService;
-import ices.fashion.service.dto.DesignDto;
+import ices.fashion.service.dto.ShareWorkCriteria;
+import ices.fashion.service.dto.ShowDto;
 import ices.fashion.service.dto.WorkDetailDto;
+import ices.fashion.util.WorkUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,28 +22,19 @@ public class WorkServiceImpl implements WorkService {
     @Autowired
     private WorkMapper workMapper;
 
+    @Autowired
+    private WorkUtil workUtil;
+
     @Override
     //这个id目前的实现形式的phone
-    public ApiResult<DesignDto> getUserDesign(String id) {
+    public ApiResult<ShowDto> getUserDesign(String id) {
         QueryWrapper<TWork> workQueryWrapper = new QueryWrapper<>();
         workQueryWrapper.eq("phone", id).select("id", "cover_url", "user_name", "category");
         List<TWork> workList = workMapper.selectList(workQueryWrapper);
 
-        DesignDto designDto = new DesignDto();
-        designDto.setVtoList(workList.stream().filter(e -> (e.getCategory() != null && e.getCategory()
-                .equals(WorkConst.VTON))).collect(Collectors.toList()));
-        designDto.setCollaborateList(workList.stream().filter(e -> (e.getCategory() != null && e.getCategory()
-                .equals(WorkConst.COLLABORATE))).collect(Collectors.toList()));
-        designDto.setRecommendList(workList.stream().filter(e -> (e.getCategory() != null && e.getCategory()
-                .equals(WorkConst.RECOMMEND))).collect(Collectors.toList()));
-        designDto.setMMCList(workList.stream().filter(e -> (e.getCategory() != null && e.getCategory()
-                .equals(WorkConst.MMC))).collect(Collectors.toList()));
-        designDto.setOutfitList(workList.stream().filter(e -> (e.getCategory() != null && e.getCategory()
-                .equals(WorkConst.OUTFIT))).collect(Collectors.toList()));
-        designDto.setRenderList(workList.stream().filter(e -> (e.getCategory() != null && e.getCategory()
-                .equals(WorkConst.RENDER))).collect(Collectors.toList()));
-        ApiResult<DesignDto> res = new ApiResult<>(200, "success");
-        res.setData(designDto);
+        ShowDto showDto = workUtil.workList2ShowDto(workList);
+        ApiResult<ShowDto> res = new ApiResult<>(200, "success");
+        res.setData(showDto);
         return res;
     }
 
@@ -64,4 +57,37 @@ public class WorkServiceImpl implements WorkService {
         }
         return new ApiResult(200, "success");
     }
+
+    @Override
+    /*
+    将当前work id
+    的作品分享
+     */
+    public ApiResult shareWork(ShareWorkCriteria shareWorkCriteria) {
+        int id = shareWorkCriteria.getId();
+        TWork work = workMapper.selectById(id);
+        work.setWorkShared(1);
+        if(workMapper.updateById(work) != 1) {
+            return new ApiResult(800, "数据库更新失败");
+        }
+        return new ApiResult(200, "success");
+    }
+
+    @Override
+    /*
+    分享区得到所有分享的作品
+     */
+    public ApiResult<ShowDto> getAllShareWork() {
+        QueryWrapper<TWork> workQueryWrapper = new QueryWrapper<>();
+        workQueryWrapper.eq("work_shared", 1).select("id", "cover_url", "user_name", "category");
+        List<TWork> workList = workMapper.selectList(workQueryWrapper);
+
+        ShowDto showDto = workUtil.workList2ShowDto(workList);
+        ApiResult<ShowDto> res = new ApiResult<>(200, "success");
+        res.setData(showDto);
+        return res;
+    }
+
+
+
 }

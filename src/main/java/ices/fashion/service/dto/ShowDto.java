@@ -10,9 +10,12 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DesignDto {
+/*
+主要用于个人空间展示和广场
+ */
+public class ShowDto {
 
-    //每个list只有id,userName,coverUrl, category有值
+    //每个list只有id, userName, coverUrl, category有值
     List<TWork> vtoList;
     List<TWork> recommendList;
     List<TWork> collaborateList;
