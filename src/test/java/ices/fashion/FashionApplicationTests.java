@@ -3,13 +3,10 @@ package ices.fashion;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import ices.fashion.constant.ApiResult;
 import ices.fashion.entity.*;
-import ices.fashion.entity.collaborate.ColComment;
-import ices.fashion.entity.collaborate.ColCommentQuery;
 import ices.fashion.entity.collaborate.ColProject;
 import ices.fashion.mapper.*;
 import ices.fashion.mapper.collaborate.ColCommentMapper;
 import ices.fashion.mapper.collaborate.ColProjectMapper;
-import ices.fashion.mapper.collaborate.ColVersionMapper;
 import ices.fashion.service.ColCommentService;
 import ices.fashion.service.ColProjectService;
 import ices.fashion.service.ColVersionService;
@@ -25,7 +22,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.File;
 import java.util.List;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 @SpringBootTest
 class FashionApplicationTests {
@@ -68,6 +64,18 @@ class FashionApplicationTests {
 
     @Autowired
     private RenderMapper renderMapper;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private WorkMapper workMapper;
+
+    @Autowired
+    private WorkService workService;
+
+    @Autowired
+    private ShareService shareService;
 
     @Test
     void contextLoads() {
@@ -237,6 +245,76 @@ class FashionApplicationTests {
                 i++;
             }
         }
+    }
+
+    @Test
+    void redisTest() {
+        userService.getUserInfo();
+    }
+
+    @Test
+    void testWorkTable() {
+        TWork work = new TWork();
+        work.setCategory("test3");
+        work.setUserName("test3");
+        work.setPhone("test3");
+        System.out.println(workMapper.insert(work));
+//        workMapper.insert(work);
+
+    }
+
+    @Test
+    void testDesign() {
+        ApiResult<ShowDto> res = workService.getUserDesign("test2");
+        ShowDto data = res.getData();
+        System.out.println(data);
+    }
+
+    @Test
+    void testDetail() {
+        ApiResult<WorkDetailDto> res = workService.getWorkDetail(5, "test");
+        WorkDetailDto data = res.getData();
+        System.out.println(data);
+    }
+
+    @Test
+    void testInsert() {
+        TWork work = new TWork();
+        work.setCategory("test3");
+        work.setUserName("test3");
+        work.setPhone("test3");
+        ApiResult res = workService.saveOneWork(work);
+    }
+
+    @Test
+    void testShareWork() {
+        ShareWorkCriteria shareWorkCriteria = new ShareWorkCriteria();
+        shareWorkCriteria.setId(5);
+        workService.shareWork(shareWorkCriteria);
+    }
+
+    @Test
+    void testGetAllShareWork() {
+        ApiResult<ShowDto> res = workService.getAllShareWork();
+        System.out.println(res.getData());
+    }
+
+    @Test
+    void testSaveShare() {
+        TShare share = new TShare();
+        share.setCreatorPhone("test");
+        share.setCreatorCoverUrl("test");
+        share.setCreatorUserName("test");
+        share.setWid(3);
+        share.setPhone("test");
+        share.setUserName("test");
+        share.setWorkCategory("vton");
+        shareService.saveOneShare(share);
+    }
+
+    @Test
+    void testGetUserShare() {
+        System.out.println(shareService.getUserShare("test").getData());
     }
 
 }
