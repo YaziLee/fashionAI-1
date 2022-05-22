@@ -34,7 +34,7 @@ public class WorkController {
     }
 
     @PostMapping("/saveOneWork")
-    public ApiResult saveOneWork(TWork work) {
+    public ApiResult saveOneWork(@RequestBody TWork work) {
         return workService.saveOneWork(work);
     }
 

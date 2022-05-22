@@ -67,6 +67,8 @@ public class WorkServiceImpl implements WorkService {
         int id = shareWorkCriteria.getId();
         TWork work = workMapper.selectById(id);
         work.setWorkShared(1);
+        work.setTitle(shareWorkCriteria.getTitle());
+        work.setWordDescription(shareWorkCriteria.getWordDescription());
         if(workMapper.updateById(work) != 1) {
             return new ApiResult(800, "数据库更新失败");
         }
