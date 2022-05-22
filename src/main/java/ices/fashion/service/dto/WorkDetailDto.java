@@ -20,6 +20,8 @@ public class WorkDetailDto {
     private String coverUrl;
     private Integer workShared;
     private Timestamp createTime;
+    private String title;
+    private String wordDescription;
 
     public WorkDetailDto(TWork work) {
         this.id = work.getId();
@@ -30,5 +32,7 @@ public class WorkDetailDto {
         this.coverUrl = work.getCoverUrl();
         this.workShared = work.getWorkShared();
         this.createTime = work.getCreateTime();
+        this.title = work.getTitle();
+        this.wordDescription = work.getWordDescription();
     }
 }

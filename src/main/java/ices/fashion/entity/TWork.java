@@ -24,4 +24,6 @@ public class TWork {
     private Timestamp updateTime;
     private Integer workDeleted;
     private Integer workShared;
+    private String title;
+    private String wordDescription;
 }

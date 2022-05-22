@@ -8,5 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ShareWorkCriteria {
-    Integer id; //要被分享的work id
+    private Integer id; //要被分享的work id
+    private String title;
+    private String wordDescription;
 }
