@@ -21,8 +21,8 @@ public class WorkController {
     id是phone
      */
     @GetMapping("/getUserDesign")
-    public ApiResult<ShowDto> getUserDesign(@RequestParam(value="id") String id) {
-        return workService.getUserDesign(id);
+    public ApiResult<ShowDto> getUserDesign(@RequestParam(value="id") String id, @RequestParam(value = "isVisitor") Boolean isVisitor) {
+        return workService.getUserDesign(id, isVisitor);
     }
 
     /*

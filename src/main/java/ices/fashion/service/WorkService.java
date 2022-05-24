@@ -8,7 +8,7 @@ import ices.fashion.service.dto.WorkDetailDto;
 
 public interface WorkService {
 
-    public ApiResult<ShowDto> getUserDesign(String id);
+    public ApiResult<ShowDto> getUserDesign(String id, Boolean isVisitor);
 
     public ApiResult<WorkDetailDto> getWorkDetail(Integer wid, String uid);
 

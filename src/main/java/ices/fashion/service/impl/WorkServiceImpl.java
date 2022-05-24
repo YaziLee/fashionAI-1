@@ -27,9 +27,12 @@ public class WorkServiceImpl implements WorkService {
 
     @Override
     //这个id目前的实现形式的phone
-    public ApiResult<ShowDto> getUserDesign(String id) {
+    public ApiResult<ShowDto> getUserDesign(String id, Boolean isVisitor) {
         QueryWrapper<TWork> workQueryWrapper = new QueryWrapper<>();
         workQueryWrapper.eq("phone", id).select("id", "cover_url", "user_name", "category");
+        if (isVisitor) {
+            workQueryWrapper.eq("work_shared", 1);
+        }
         List<TWork> workList = workMapper.selectList(workQueryWrapper);
 
         ShowDto showDto = workUtil.workList2ShowDto(workList);

@@ -265,7 +265,7 @@ class FashionApplicationTests {
 
     @Test
     void testDesign() {
-        ApiResult<ShowDto> res = workService.getUserDesign("test2");
+        ApiResult<ShowDto> res = workService.getUserDesign("test2", false);
         ShowDto data = res.getData();
         System.out.println(data);
     }
