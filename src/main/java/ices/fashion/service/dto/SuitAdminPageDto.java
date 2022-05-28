@@ -1,5 +1,6 @@
 package ices.fashion.service.dto;
 
+import ices.fashion.entity.TBaseMaterial;
 import ices.fashion.entity.TBaseSuit;
 import lombok.AllArgsConstructor;
 import lombok.Data;

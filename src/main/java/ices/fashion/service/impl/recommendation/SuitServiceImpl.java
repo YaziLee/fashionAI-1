@@ -15,10 +15,7 @@ import ices.fashion.mapper.TBaseMaterialMapper;
 import ices.fashion.mapper.TBaseSuitMapper;
 import ices.fashion.service.MaterialService;
 import ices.fashion.service.SuitService;
-import ices.fashion.service.dto.MaterialPageCriteria;
-import ices.fashion.service.dto.SuitAdminPageDto;
-import ices.fashion.service.dto.SuitAuditCriteria;
-import ices.fashion.service.dto.SuitPageCriteria;
+import ices.fashion.service.dto.*;
 import ices.fashion.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,14 +24,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class SuitServiceImpl implements SuitService {
     @Autowired
     private TBaseSuitMapper tBaseSuitMapper;
+    @Autowired
+    private TBaseMaterialMapper tBaseMaterialMapper;
     private static final Logger LOGGER = LoggerFactory.getLogger(SuitServiceImpl.class);
 
     @Override
