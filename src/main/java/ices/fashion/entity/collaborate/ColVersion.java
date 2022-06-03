@@ -17,8 +17,12 @@ public class ColVersion {
     private Integer id;
     private Integer pid;
     private String canvas;
+    private String backCanvas;
     private String image;
+    private String backImage;
     private Integer parentVersion;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Integer saved;
+
 }

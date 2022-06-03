@@ -5,6 +5,7 @@ import ices.fashion.constant.ApiResult;
 import ices.fashion.constant.WorkConst;
 import ices.fashion.entity.TWork;
 import ices.fashion.mapper.WorkMapper;
+import ices.fashion.service.ColVersionService;
 import ices.fashion.service.WorkService;
 import ices.fashion.service.dto.ShareWorkCriteria;
 import ices.fashion.service.dto.ShowDto;
@@ -24,6 +25,9 @@ public class WorkServiceImpl implements WorkService {
 
     @Autowired
     private WorkUtil workUtil;
+
+    @Autowired
+    private ColVersionService colVersionService;
 
     @Override
     //这个id目前的实现形式的phone
@@ -54,6 +58,11 @@ public class WorkServiceImpl implements WorkService {
     public ApiResult saveOneWork(TWork work) {
         if(workMapper.insert(work) != 1) {
             return new ApiResult(800, "数据库更新失败");
+        }
+        System.out.println(work.getCategory());
+        if(work.getCategory().equals("collaborate") ){
+            String workStr = work.getWorkDescription();
+            colVersionService.updateSaved(workStr,1);
         }
         return new ApiResult(200, "success");
     }

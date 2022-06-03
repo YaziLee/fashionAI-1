@@ -1,7 +1,9 @@
 package ices.fashion.service.impl.collaborate;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.gson.Gson;
 import ices.fashion.entity.collaborate.ColVersion;
+import ices.fashion.entity.collaborate.ColWorkDescription;
 import ices.fashion.mapper.collaborate.ColVersionMapper;
 import ices.fashion.service.ColVersionService;
 import ices.fashion.service.dto.collaborate.ColVersionDto;
@@ -38,7 +40,7 @@ public class ColVersionServiceImpl implements ColVersionService {
             //传给前端的数据只保留到天
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             String date = df.format(colVersion.getCreateTime());
-            ColVersionDto dto = new ColVersionDto(id,colVersion.getCanvas(),colVersion.getBackCanvas(),colVersion.getImage(),colVersion.getBackImage(),parent,date,new ArrayList<>());
+            ColVersionDto dto = new ColVersionDto(id,colVersion.getCanvas(),colVersion.getBackCanvas(),colVersion.getImage(),colVersion.getBackImage(),parent,date,colVersion.getSaved(),new ArrayList<>());
             if(id == parent){
                 res.set(0,dto);
                 mp.put(id,0);
@@ -71,6 +73,7 @@ public class ColVersionServiceImpl implements ColVersionService {
         colVersion.setImage(image);
         colVersion.setParentVersion(parent);
         colVersion.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        colVersion.setSaved(0);
 
         Integer result = colVersionMapper.insert(colVersion);
 
@@ -93,6 +96,7 @@ public class ColVersionServiceImpl implements ColVersionService {
         colVersion.setBackImage(backImage);
         colVersion.setParentVersion(parent);
         colVersion.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        colVersion.setSaved(0);
 
         Integer result = colVersionMapper.insert(colVersion);
 
@@ -101,5 +105,26 @@ public class ColVersionServiceImpl implements ColVersionService {
             colVersion.setParentVersion(id);
             colVersionMapper.updateById(colVersion);
         }
+    }
+
+    @Override
+    public void  updateSaved(int vid, int saved){
+        ColVersion version = new ColVersion();
+        version.setId(vid);
+        version.setSaved(saved);
+
+        colVersionMapper.updateById(version);
+    }
+
+    @Override
+    public void updateSaved(String str,int saved){
+        Gson gson = new Gson();
+        ColWorkDescription workDescription = gson.fromJson(str,ColWorkDescription.class);
+        ColVersion version = workDescription.getVersion();
+        int id = version.getId();
+        System.out.println("update saved: " + id);
+
+        updateSaved(id,saved);
+
     }
 }

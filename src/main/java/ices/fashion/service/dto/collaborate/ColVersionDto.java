@@ -14,8 +14,11 @@ import java.util.ArrayList;
 public class ColVersionDto {
     private Integer id;
     private String canvas;
+    private String backCanvas;
     private String image;
+    private String backImage;
     private Integer parent_version;
     private String create_time;
+    private Integer saved;
     private ArrayList<Integer> childrenIndex;
 }

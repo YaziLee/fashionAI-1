@@ -317,4 +317,28 @@ class FashionApplicationTests {
         System.out.println(shareService.getUserShare("test").getData());
     }
 
+    @Test
+    void testUpdateVersionShared(){
+        colVersionService.updateSaved(59,1);
+    }
+
+    @Test
+    void testUpdateVersionSharedStr(){
+        String str = "{\n" +
+                "    backImg: \"\",\n" +
+                "    frontImg: \"\",\n" +
+                "    introduce: \"\",\n" +
+                "    version: {\n" +
+                "        \"id\": 140,\n" +
+                "        \"canvas\": \"1\",\n" +
+                "        \"backCanvas\":\"1\",\n" +
+                "        \"image\": \"1\",\n" +
+                "        \"backImage\":\"1\",\n" +
+                "        \"parent_version\": 134,\n" +
+                "        \"create_time\": \"2022-05-30\",\n" +
+                "        \"childrenIndex\": []\n" +
+                "    }\n" +
+                "}\n";
+        colVersionService.updateSaved(str,1);
+    }
 }
