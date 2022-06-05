@@ -15,7 +15,7 @@ public class UploadTokenController {
     private UploadTokenService uploadTokenService;
 
     @GetMapping("/uploadToken")
-    public String getUploadToken(){
-        return uploadTokenService.getUploadToken();
+    public String getUploadToken(boolean forever){
+        return uploadTokenService.getUploadToken(forever);
     }
 }

@@ -168,7 +168,7 @@ class FashionApplicationTests {
 
     @Test
     void testUploadToken() {
-        String token = uploadTokenService.getUploadToken();
+        String token = uploadTokenService.getUploadToken(true);
         System.out.println(token);
     }
 
