@@ -21,7 +21,7 @@ public interface SuitService {
      * 搭配套装相关
      */
     // 更新套装记录（包括图片）或新增记录
-    ApiResult insertSuit(String name, String description, String materialIds, String customerId, BigDecimal price, Integer status, MultipartFile multipartFile);
+    ApiResult insertSuit(String name, String description, String materialIds, String customerId, BigDecimal price, Integer status, String canvas, MultipartFile multipartFile);
 
     // 更新套装记录文本信息和状态
     Integer updateSuit(TBaseSuit tBaseSuit);
@@ -40,4 +40,7 @@ public interface SuitService {
 
     // 审核套装，允许批量审核；批量审核时无审核评语
     ApiResult auditSuits(SuitAuditCriteria suitAuditCriteria);
+
+    // 根据id列表硬删除草稿记录
+    ApiResult deleteDrafts(List<Integer> ids, String customerId) throws Exception;
 }

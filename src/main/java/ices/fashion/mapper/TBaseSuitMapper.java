@@ -25,6 +25,9 @@ public interface TBaseSuitMapper extends BaseMapper<TBaseSuit> {
     Integer recoverSuits(@Param("ids") List<Integer> ids);
     // 批量审核
     void auditSuits(@Param("suitAuditCriteria") SuitAuditCriteria suitAuditCriteria);
+    // 硬删除草稿，应该检查是否为草稿和是否为创作者
+    Integer deleteDraftsByIds(@Param("ids") List<Integer> ids, @Param("customerId") String customerId);
+
 
 }
 

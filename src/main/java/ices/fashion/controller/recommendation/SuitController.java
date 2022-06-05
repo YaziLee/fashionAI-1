@@ -2,6 +2,7 @@ package ices.fashion.controller.recommendation;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.qiniu.storage.Api;
 import ices.fashion.constant.ApiResult;
 import ices.fashion.constant.ResultMessage;
 import ices.fashion.entity.TBaseSuit;
@@ -71,8 +72,9 @@ public class SuitController {
         String customerId = request.getParameter("customerId").trim();
         BigDecimal price = new BigDecimal(request.getParameter("price"));
         Integer status = Integer.valueOf(request.getParameter("status"));
+        String canvas = request.getParameter("canvas");
         MultipartFile multipartFile = request.getFile("file");
-        return suitService.insertSuit(name, description, materialIds, customerId, price, status, multipartFile);
+        return suitService.insertSuit(name, description, materialIds, customerId, price, status, canvas, multipartFile);
     }
 
     /**
@@ -107,6 +109,21 @@ public class SuitController {
     public ApiResult deleteSuits(@RequestParam("ids") List<Integer> ids) throws Exception{
         try {
             return suitService.deleteSuits(ids);
+        } catch (Exception e) {
+            return new ApiResult(500, e.getMessage());
+        }
+    }
+
+    /**
+     * 对于草稿是硬删除
+     * @param ids
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/delete-drafts")
+    public ApiResult deleteDrafts(@RequestParam("ids") List<Integer> ids, @RequestParam("customerId") String customerId) throws Exception {
+        try {
+            return suitService.deleteDrafts(ids, customerId);
         } catch (Exception e) {
             return new ApiResult(500, e.getMessage());
         }

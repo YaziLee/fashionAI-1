@@ -39,7 +39,7 @@ public class SuitServiceImpl implements SuitService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SuitServiceImpl.class);
 
     @Override
-    public ApiResult insertSuit(String name, String description, String materialIds, String customerId, BigDecimal price, Integer status, MultipartFile multipartFile) {
+    public ApiResult insertSuit(String name, String description, String materialIds, String customerId, BigDecimal price, Integer status, String canvas, MultipartFile multipartFile) {
         String imgUrl = FileUtil.uploadMultipartFile(multipartFile); // 上传图片
         TBaseSuit tBaseSuit = new TBaseSuit();
         tBaseSuit.setCustomerId(customerId);
@@ -50,6 +50,7 @@ public class SuitServiceImpl implements SuitService {
         tBaseSuit.setAuditStatus(0);
         tBaseSuit.setPrice(price);
         tBaseSuit.setDescription(description);
+        tBaseSuit.setCanvas(canvas);
         tBaseSuitMapper.insert(tBaseSuit);
         return new ApiResult(ResultMessage.RESULT_SUCCESS_1);
     }
@@ -93,6 +94,14 @@ public class SuitServiceImpl implements SuitService {
     @Override
     public ApiResult auditSuits(SuitAuditCriteria suitAuditCriteria){
         tBaseSuitMapper.auditSuits(suitAuditCriteria);
+        return new ApiResult(ResultMessage.RESULT_SUCCESS_1);
+    }
+
+    @Override
+    public ApiResult deleteDrafts(List<Integer> ids, String customerId) throws Exception {
+        Integer status = tBaseSuitMapper.deleteDraftsByIds(ids, customerId);
+        if (status < 1)
+            throw new Exception();
         return new ApiResult(ResultMessage.RESULT_SUCCESS_1);
     }
 }

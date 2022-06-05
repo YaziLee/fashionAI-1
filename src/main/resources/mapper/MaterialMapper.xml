@@ -119,6 +119,11 @@
                     and 1=0
                 </when>
             </choose>
+            <choose>
+                <when test="materialPageCriteria.targetPopulation != null">
+                    AND m.`target_population` = #{materialPageCriteria.targetPopulation}
+                </when>
+            </choose>
         </where>
         ORDER BY m.`id`ASC
     </select>
