@@ -30,4 +30,16 @@ public class VersionController {
     public void insertVersion(Integer pid,String canvas,String image,Integer parent){
         colVersionService.insertVersion(pid, canvas, image, parent);
     }
+
+    /**
+     * 接收from表单,包括正面和背面
+     * @param pid
+     * @param canvas
+     * @param image
+     * @param parent
+     */
+    @PostMapping("/insertVersionDouble")
+    public void insertVersionDouble(Integer pid,String canvas,String backCanvas,String frontImage,String backImage,Integer parent){
+        colVersionService.insertVersionDouble(pid, canvas, backCanvas,frontImage,backImage, parent);
+    }
 }
