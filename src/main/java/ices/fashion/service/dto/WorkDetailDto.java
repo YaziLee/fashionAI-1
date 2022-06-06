@@ -1,11 +1,13 @@
 package ices.fashion.service.dto;
 
+import ices.fashion.entity.TComment;
 import ices.fashion.entity.TWork;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -22,6 +24,7 @@ public class WorkDetailDto {
     private Timestamp createTime;
     private String title;
     private String wordDescription;
+    private List<TComment> commentList;
 
     public WorkDetailDto(TWork work) {
         this.id = work.getId();
