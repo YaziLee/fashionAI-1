@@ -3,7 +3,9 @@ package ices.fashion.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import ices.fashion.constant.ApiResult;
 import ices.fashion.constant.WorkConst;
+import ices.fashion.entity.TComment;
 import ices.fashion.entity.TWork;
+import ices.fashion.mapper.CommentMapper;
 import ices.fashion.mapper.WorkMapper;
 import ices.fashion.service.ColVersionService;
 import ices.fashion.service.WorkService;
@@ -29,6 +31,9 @@ public class WorkServiceImpl implements WorkService {
     @Autowired
     private ColVersionService colVersionService;
 
+    @Autowired
+    private CommentMapper commentMapper;
+
     @Override
     //这个id目前的实现形式的phone
     public ApiResult<ShowDto> getUserDesign(String id, Boolean isVisitor) {
@@ -51,7 +56,14 @@ public class WorkServiceImpl implements WorkService {
         QueryWrapper<TWork> workQueryWrapper = new QueryWrapper<>();
         workQueryWrapper.eq("id", wid);
         TWork work = workMapper.selectOne(workQueryWrapper);
+
+        //拿到评论信息
+        QueryWrapper<TComment> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("wid", wid).eq("comment_deleted", 0).orderByDesc("create_time");
+        List<TComment> commentList = commentMapper.selectList(queryWrapper);
+
         WorkDetailDto data = new WorkDetailDto(work);
+        data.setCommentList(commentList);
         ApiResult<WorkDetailDto> res = new ApiResult<>(200, "success");
         res.setData(data);
         return res;

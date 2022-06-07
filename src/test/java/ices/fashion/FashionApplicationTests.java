@@ -77,6 +77,9 @@ class FashionApplicationTests {
     @Autowired
     private ShareService shareService;
 
+    @Autowired
+    private CommentService commentService;
+
     @Test
     void contextLoads() {
     }
@@ -341,4 +344,10 @@ class FashionApplicationTests {
                 "}\n";
         colVersionService.updateSaved(str,1);
     }
+
+//    @Test
+//    void testSaveComment(){
+//
+//        colVersionService.updateSaved(str,1);
+//    }
 }
