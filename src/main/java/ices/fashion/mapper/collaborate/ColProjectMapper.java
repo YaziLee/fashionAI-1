@@ -2,7 +2,7 @@ package ices.fashion.mapper.collaborate;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import ices.fashion.entity.collaborate.ColProject;
-import ices.fashion.service.dto.collaborate.ColProjectDto;
+import ices.fashion.service.collaborate.dto.ColProjectDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

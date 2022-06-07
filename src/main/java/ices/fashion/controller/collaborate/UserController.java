@@ -1,6 +1,6 @@
 package ices.fashion.controller.collaborate;
 
-import ices.fashion.service.ColUserService;
+import ices.fashion.service.collaborate.ColUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;

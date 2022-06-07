@@ -1,9 +1,9 @@
-package ices.fashion.service.impl.collaborate;
+package ices.fashion.service.collaborate.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import ices.fashion.entity.collaborate.ColUser;
 import ices.fashion.mapper.collaborate.ColUserMapper;
-import ices.fashion.service.ColUserService;
+import ices.fashion.service.collaborate.ColUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

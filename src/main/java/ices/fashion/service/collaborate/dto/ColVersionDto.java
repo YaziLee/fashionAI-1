@@ -1,4 +1,4 @@
-package ices.fashion.service.dto.collaborate;
+package ices.fashion.service.collaborate.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
