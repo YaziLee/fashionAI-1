@@ -1,12 +1,12 @@
-package ices.fashion.service.impl.collaborate;
+package ices.fashion.service.collaborate.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.gson.Gson;
 import ices.fashion.entity.collaborate.ColVersion;
 import ices.fashion.entity.collaborate.ColWorkDescription;
 import ices.fashion.mapper.collaborate.ColVersionMapper;
-import ices.fashion.service.ColVersionService;
-import ices.fashion.service.dto.collaborate.ColVersionDto;
+import ices.fashion.service.collaborate.ColVersionService;
+import ices.fashion.service.collaborate.dto.ColVersionDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

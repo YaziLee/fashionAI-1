@@ -1,12 +1,9 @@
-package ices.fashion.service.impl.collaborate;
+package ices.fashion.service.collaborate.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import ices.fashion.entity.collaborate.ColComment;
 import ices.fashion.entity.collaborate.ColCommentQuery;
 import ices.fashion.mapper.collaborate.ColCommentMapper;
-import ices.fashion.service.ColCommentService;
-import ices.fashion.service.dto.collaborate.ColCommentDto;
-import io.swagger.models.auth.In;
+import ices.fashion.service.collaborate.ColCommentService;
+import ices.fashion.service.collaborate.dto.ColCommentDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -2,12 +2,11 @@ package ices.fashion.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import ices.fashion.constant.ApiResult;
-import ices.fashion.constant.WorkConst;
 import ices.fashion.entity.TComment;
 import ices.fashion.entity.TWork;
 import ices.fashion.mapper.CommentMapper;
 import ices.fashion.mapper.WorkMapper;
-import ices.fashion.service.ColVersionService;
+import ices.fashion.service.collaborate.ColVersionService;
 import ices.fashion.service.WorkService;
 import ices.fashion.service.dto.ShareWorkCriteria;
 import ices.fashion.service.dto.ShowDto;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class WorkServiceImpl implements WorkService {

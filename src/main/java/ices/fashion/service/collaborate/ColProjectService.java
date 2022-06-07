@@ -1,7 +1,7 @@
-package ices.fashion.service;
+package ices.fashion.service.collaborate;
 
 import ices.fashion.entity.collaborate.ColProject;
-import ices.fashion.service.dto.collaborate.ColProjectDto;
+import ices.fashion.service.collaborate.dto.ColProjectDto;
 
 import java.util.List;
 

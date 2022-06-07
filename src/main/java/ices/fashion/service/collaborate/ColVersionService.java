@@ -1,6 +1,6 @@
-package ices.fashion.service;
+package ices.fashion.service.collaborate;
 
-import ices.fashion.service.dto.collaborate.ColVersionDto;
+import ices.fashion.service.collaborate.dto.ColVersionDto;
 
 import java.util.List;
 

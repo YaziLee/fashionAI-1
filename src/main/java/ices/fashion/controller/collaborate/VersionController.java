@@ -1,7 +1,7 @@
 package ices.fashion.controller.collaborate;
 
-import ices.fashion.service.ColVersionService;
-import ices.fashion.service.dto.collaborate.ColVersionDto;
+import ices.fashion.service.collaborate.ColVersionService;
+import ices.fashion.service.collaborate.dto.ColVersionDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
