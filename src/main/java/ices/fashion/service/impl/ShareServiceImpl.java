@@ -71,9 +71,7 @@ public class ShareServiceImpl implements ShareService {
     public ApiResult deleteOneShareById(Integer id) {
         TShare share = shareMapper.selectById(id);
         share.setDeleted(1);
-        if(shareMapper.update(share, null) != 1) {
-            return new ApiResult(800, "数据库更新失败");
-        }
+        shareMapper.update(share, null);
         return new ApiResult(200, "success");
     }
 }

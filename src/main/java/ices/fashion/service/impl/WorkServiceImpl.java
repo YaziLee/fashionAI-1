@@ -121,7 +121,8 @@ public class WorkServiceImpl implements WorkService {
      */
     public ApiResult<ShowDto> getAllShareWork() {
         QueryWrapper<TWork> workQueryWrapper = new QueryWrapper<>();
-        workQueryWrapper.eq("work_shared", 1).select("id", "cover_url", "user_name", "category", "title");
+        workQueryWrapper.eq("work_shared", 1).eq("work_deleted",0)
+                .select("id", "cover_url", "user_name", "category", "title");
         List<TWork> workList = workMapper.selectList(workQueryWrapper);
 
         ShowDto showDto = workUtil.workList2ShowDto(workList);
@@ -133,7 +134,7 @@ public class WorkServiceImpl implements WorkService {
     @Override
     public ApiResult cancelOneWorkShare(Integer wid) {
         TWork work = workMapper.selectById(wid);
-        work.setWorkDeleted(1);
+        work.setWorkShared(0);
         if(workMapper.updateById(work) != 1) {
             return new ApiResult(800, "数据库更新失败");
         }
