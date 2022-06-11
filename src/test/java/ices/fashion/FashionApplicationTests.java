@@ -87,6 +87,9 @@ class FashionApplicationTests {
     @Autowired
     private CollaborateMaterialMapper collaborateMaterialMapper;
 
+    @Autowired
+    private ShareMapper shareMapper;
+
     @Test
     void contextLoads() {
     }
@@ -389,5 +392,13 @@ class FashionApplicationTests {
             tmp.setCategory(CollaborateConst.TEMPLATE);
             collaborateMaterialMapper.insert(tmp);
         }
+    }
+
+    @Test
+    void testSelectOne() {
+        QueryWrapper<TShare> shareQueryWrapper = new QueryWrapper<>();
+        shareQueryWrapper.eq("id", 100);
+        TShare share = shareMapper.selectOne(shareQueryWrapper);
+        System.out.println(share);
     }
 }

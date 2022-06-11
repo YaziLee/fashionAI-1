@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class ShowDto {
 
-    //每个list只有id, userName, coverUrl, category有值
+    //每个list只有id, userName, coverUrl, category title有值
     List<TWork> vtoList;
     List<TWork> recommendList;
     List<TWork> collaborateList;

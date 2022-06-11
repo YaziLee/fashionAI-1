@@ -1,6 +1,7 @@
 package ices.fashion.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import ices.fashion.constant.ApiResult;
 import ices.fashion.constant.WorkConst;
 import ices.fashion.entity.TShare;
@@ -33,7 +34,7 @@ public class ShareServiceImpl implements ShareService {
     public ApiResult<ShowDto> getUserShare(String id) {
         QueryWrapper<TShare> shareQueryWrapper = new QueryWrapper<>();
         shareQueryWrapper.eq("phone", id).select("creator_cover_url", "creator_user_name", "work_category",
-                "wid");
+                "wid").eq("deleted", 0);
         List<TShare> shareList = shareMapper.selectList(shareQueryWrapper);
 
         List<TWork> workList = new ArrayList<>();
@@ -52,8 +53,25 @@ public class ShareServiceImpl implements ShareService {
 
      */
     @Override
-    public ApiResult saveOneShare(TShare share) {
+    public ApiResult<Integer> saveOneShare(TShare share) {
         if(shareMapper.insert(share) != 1) {
+            return new ApiResult(800, "数据库更新失败");
+        }
+        ApiResult<Integer> res = new ApiResult(200, "success");
+        QueryWrapper<TShare> shareQueryWrapper = new QueryWrapper<>();
+        shareQueryWrapper.eq("deleted", 0)
+                .eq("phone", share.getPhone())
+                .eq("wid", share.getWid());
+        TShare tmpShare = shareMapper.selectOne(shareQueryWrapper);
+        res.setData(tmpShare.getId());
+        return res;
+    }
+
+    @Override
+    public ApiResult deleteOneShareById(Integer id) {
+        TShare share = shareMapper.selectById(id);
+        share.setDeleted(1);
+        if(shareMapper.update(share, null) != 1) {
             return new ApiResult(800, "数据库更新失败");
         }
         return new ApiResult(200, "success");

@@ -21,7 +21,8 @@ public class WorkController {
     id是phone
      */
     @GetMapping("/getUserDesign")
-    public ApiResult<ShowDto> getUserDesign(@RequestParam(value="id") String id, @RequestParam(value = "isVisitor") Boolean isVisitor) {
+    public ApiResult<ShowDto> getUserDesign(@RequestParam(value ="id") String id,
+                                            @RequestParam(value = "isVisitor") Boolean isVisitor) {
         return workService.getUserDesign(id, isVisitor);
     }
 
@@ -29,7 +30,8 @@ public class WorkController {
     id是phone
      */
     @GetMapping("/getWorkDetail")
-    public ApiResult<WorkDetailDto> getWorkDetail(@RequestParam(value="wid") Integer wid, @RequestParam(value="uid") String uid) {
+    public ApiResult<WorkDetailDto> getWorkDetail(@RequestParam(value = "wid") Integer wid,
+                                                  @RequestParam(value = "uid") String uid) {
         return workService.getWorkDetail(wid, uid);
     }
 
@@ -46,5 +48,10 @@ public class WorkController {
     @GetMapping("/getAllShareWork")
     public ApiResult<ShowDto> getAllShareWork() {
         return workService.getAllShareWork();
+    }
+
+    @DeleteMapping("/cancelOneWorkShare/{wid}")
+    public ApiResult cancelOneWorkShare(@PathVariable Integer wid) {
+        return workService.cancelOneWorkShare(wid);
     }
 }

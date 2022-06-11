@@ -8,5 +8,7 @@ public interface ShareService {
 
     public ApiResult<ShowDto> getUserShare(String id);
 
-    public ApiResult saveOneShare(TShare share);
+    public ApiResult<Integer> saveOneShare(TShare share);
+
+    public ApiResult deleteOneShareById(Integer id);
 }

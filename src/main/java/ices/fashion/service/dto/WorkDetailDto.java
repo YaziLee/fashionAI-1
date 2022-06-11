@@ -26,6 +26,9 @@ public class WorkDetailDto {
     private String wordDescription;
     private List<TComment> commentList;
 
+    private Integer isVisitorShared;
+    private Integer shareId;
+
     public WorkDetailDto(TWork work) {
         this.id = work.getId();
         this.phone = work.getPhone();

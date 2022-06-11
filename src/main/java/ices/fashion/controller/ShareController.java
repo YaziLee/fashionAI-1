@@ -21,7 +21,13 @@ public class ShareController {
     }
 
     @PostMapping("/saveOneShare")
-    public ApiResult saveOneShare(@RequestBody TShare share) {
+    public ApiResult<Integer> saveOneShare(@RequestBody TShare share) {
         return shareService.saveOneShare(share);
     }
+
+    @DeleteMapping("/deleteOneShare/{id}")
+    public ApiResult deleteOneShareById(@PathVariable Integer id) {
+        return shareService.deleteOneShareById(id);
+    }
+
 }
