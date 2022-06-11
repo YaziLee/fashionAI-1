@@ -17,4 +17,6 @@ public interface WorkService {
     public ApiResult shareWork(ShareWorkCriteria shareWorkCriteria);
 
     public ApiResult<ShowDto> getAllShareWork();
+
+    public ApiResult cancelOneWorkShare(Integer wid);
 }

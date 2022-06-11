@@ -2,11 +2,14 @@ package ices.fashion;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import ices.fashion.constant.ApiResult;
+import ices.fashion.constant.CollaborateConst;
 import ices.fashion.entity.*;
 import ices.fashion.entity.collaborate.ColProject;
+import ices.fashion.entity.collaborate.TCollaborateMaterial;
 import ices.fashion.mapper.*;
 import ices.fashion.mapper.collaborate.ColCommentMapper;
 import ices.fashion.mapper.collaborate.ColProjectMapper;
+import ices.fashion.mapper.collaborate.CollaborateMaterialMapper;
 import ices.fashion.service.collaborate.ColCommentService;
 import ices.fashion.service.collaborate.ColProjectService;
 import ices.fashion.service.collaborate.ColUserService;
@@ -80,6 +83,12 @@ class FashionApplicationTests {
 
     @Autowired
     private CommentService commentService;
+
+    @Autowired
+    private CollaborateMaterialMapper collaborateMaterialMapper;
+
+    @Autowired
+    private ShareMapper shareMapper;
 
     @Test
     void contextLoads() {
@@ -346,9 +355,50 @@ class FashionApplicationTests {
         colVersionService.updateSaved(str,1);
     }
 
-//    @Test
-//    void testSaveComment(){
-//
-//        colVersionService.updateSaved(str,1);
-//    }
+    @Test
+    void insertIconsMaterial(){
+        String dir = "D:\\HIT\\5\\fashion\\web\\FashionAI\\static\\svg\\icons";
+        File file = new File(dir);
+        File[] files = file.listFiles();
+        for (File f : files) {
+            TCollaborateMaterial tmp = new TCollaborateMaterial();
+            tmp.setFileName("fashion/collaborate/icons/" + f.getName());
+            tmp.setCategory(CollaborateConst.ICONS);
+            collaborateMaterialMapper.insert(tmp);
+        }
+    }
+
+    @Test
+    void insertClothMaterial(){
+        String dir = "C:\\Users\\HIT\\Documents\\WeChat Files\\wxid_pdslqg4qx9g632\\FileStorage\\File\\2022-06\\cloth";
+        File file = new File(dir);
+        File[] files = file.listFiles();
+        for (File f : files) {
+            TCollaborateMaterial tmp = new TCollaborateMaterial();
+            tmp.setFileName("fashion/collaborate/cloth/" + f.getName());
+            tmp.setCategory(CollaborateConst.CLOTH);
+            collaborateMaterialMapper.insert(tmp);
+        }
+    }
+
+    @Test
+    void insertTemplateMaterial(){
+        String dir = "D:\\HIT\\5\\fashion\\web\\FashionAI\\static\\template";
+        File file = new File(dir);
+        File[] files = file.listFiles();
+        for (File f : files) {
+            TCollaborateMaterial tmp = new TCollaborateMaterial();
+            tmp.setFileName("fashion/collaborate/template/" + f.getName());
+            tmp.setCategory(CollaborateConst.TEMPLATE);
+            collaborateMaterialMapper.insert(tmp);
+        }
+    }
+
+    @Test
+    void testSelectOne() {
+        QueryWrapper<TShare> shareQueryWrapper = new QueryWrapper<>();
+        shareQueryWrapper.eq("id", 100);
+        TShare share = shareMapper.selectOne(shareQueryWrapper);
+        System.out.println(share);
+    }
 }

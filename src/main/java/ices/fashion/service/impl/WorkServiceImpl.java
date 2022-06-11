@@ -3,8 +3,10 @@ package ices.fashion.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import ices.fashion.constant.ApiResult;
 import ices.fashion.entity.TComment;
+import ices.fashion.entity.TShare;
 import ices.fashion.entity.TWork;
 import ices.fashion.mapper.CommentMapper;
+import ices.fashion.mapper.ShareMapper;
 import ices.fashion.mapper.WorkMapper;
 import ices.fashion.service.collaborate.ColVersionService;
 import ices.fashion.service.WorkService;
@@ -32,6 +34,9 @@ public class WorkServiceImpl implements WorkService {
     @Autowired
     private CommentMapper commentMapper;
 
+    @Autowired
+    private ShareMapper shareMapper;
+
     @Override
     //这个id目前的实现形式的phone
     public ApiResult<ShowDto> getUserDesign(String id, Boolean isVisitor) {
@@ -49,7 +54,7 @@ public class WorkServiceImpl implements WorkService {
     }
 
     @Override
-    //这个uid目前的实现形式的phone
+    //这个uid代表其他游客访问详情页,目前的实现形式的phone
     public ApiResult<WorkDetailDto> getWorkDetail(Integer wid, String uid) {
         QueryWrapper<TWork> workQueryWrapper = new QueryWrapper<>();
         workQueryWrapper.eq("id", wid);
@@ -62,6 +67,19 @@ public class WorkServiceImpl implements WorkService {
 
         WorkDetailDto data = new WorkDetailDto(work);
         data.setCommentList(commentList);
+
+        //获取游客是否收藏的信息
+        QueryWrapper<TShare> shareQueryWrapper = new QueryWrapper<>();
+        shareQueryWrapper.eq("deleted", 0).eq("wid", wid).eq("phone", uid);
+        TShare share = shareMapper.selectOne(shareQueryWrapper);
+        if (share == null) {
+            data.setIsVisitorShared(0);
+            data.setShareId(0);
+        } else {
+            data.setIsVisitorShared(1);
+            data.setShareId(share.getId());
+        }
+
         ApiResult<WorkDetailDto> res = new ApiResult<>(200, "success");
         res.setData(data);
         return res;
@@ -103,7 +121,7 @@ public class WorkServiceImpl implements WorkService {
      */
     public ApiResult<ShowDto> getAllShareWork() {
         QueryWrapper<TWork> workQueryWrapper = new QueryWrapper<>();
-        workQueryWrapper.eq("work_shared", 1).select("id", "cover_url", "user_name", "category");
+        workQueryWrapper.eq("work_shared", 1).select("id", "cover_url", "user_name", "category", "title");
         List<TWork> workList = workMapper.selectList(workQueryWrapper);
 
         ShowDto showDto = workUtil.workList2ShowDto(workList);
@@ -112,6 +130,24 @@ public class WorkServiceImpl implements WorkService {
         return res;
     }
 
+    @Override
+    public ApiResult cancelOneWorkShare(Integer wid) {
+        TWork work = workMapper.selectById(wid);
+        work.setWorkDeleted(1);
+        if(workMapper.updateById(work) != 1) {
+            return new ApiResult(800, "数据库更新失败");
+        }
+        QueryWrapper<TShare> shareQueryWrapper = new QueryWrapper<>();
+        shareQueryWrapper.eq("wid", wid).eq("deleted", 0);
+        List<TShare> shareList = shareMapper.selectList(shareQueryWrapper);
+        for (TShare share : shareList) {
+            share.setDeleted(1);
+            if (shareMapper.updateById(share) != 1) {
+                return new ApiResult(800, "数据库更新失败");
+            }
+        }
+        return new ApiResult(200, "success");
+    }
 
 
 }
