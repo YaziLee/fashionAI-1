@@ -1,33 +1,16 @@
 package ices.fashion.controller.recommendation;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.google.gson.JsonArray;
-import com.qiniu.storage.Api;
 import ices.fashion.constant.ApiResult;
 import ices.fashion.constant.ResultMessage;
-import ices.fashion.entity.TBaseMaterial;
-import ices.fashion.entity.TBaseMaterialBrand;
-import ices.fashion.entity.TBaseMaterialCategory;
-import ices.fashion.service.MaterialService;
-import ices.fashion.service.RecService;
-import ices.fashion.service.dto.MaterialPageCriteria;
-import ices.fashion.service.dto.MaterialPageDto;
-import ices.fashion.util.FileUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ices.fashion.service.recommendation.RecService;
+import ices.fashion.service.recommendation.dto.MaterialPageDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin

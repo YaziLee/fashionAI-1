@@ -2,11 +2,7 @@ package ices.fashion.service.collaborate.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import ices.fashion.constant.ApiResult;
-import ices.fashion.constant.CollaborateConst;
-import ices.fashion.constant.GANConst;
-import ices.fashion.entity.TMmc;
 import ices.fashion.entity.collaborate.TCollaborateMaterial;
-import ices.fashion.mapper.collaborate.ColCommentMapper;
 import ices.fashion.mapper.collaborate.CollaborateMaterialMapper;
 import ices.fashion.service.collaborate.ColMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;

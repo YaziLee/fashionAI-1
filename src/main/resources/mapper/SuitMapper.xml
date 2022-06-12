@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
-<mapper namespace="ices.fashion.mapper.TBaseSuitMapper">
-    <resultMap id="BaseResultMap" type="ices.fashion.entity.TBaseSuit">
+<mapper namespace="ices.fashion.mapper.recommendation.TBaseSuitMapper">
+    <resultMap id="BaseResultMap" type="ices.fashion.entity.recommendation.TBaseSuit">
         <id column="id" property="id" jdbcType="INTEGER"/>
         <result column="name" property="name" jdbcType="VARCHAR"/>
         <result column="customer_id" property="customerId" jdbcType="VARCHAR"/>
@@ -17,7 +17,7 @@
         <result column="like_count" property="likeCount" jdbcType="INTEGER"/>
         <result column="description" property="description" jdbcType="VARCHAR"/>
     </resultMap>
-    <resultMap id="SuitAdminPageResultMap" extends="BaseResultMap" type="ices.fashion.service.dto.SuitAdminPageDto">
+    <resultMap id="SuitAdminPageResultMap" extends="BaseResultMap" type="ices.fashion.service.recommendation.dto.SuitAdminPageDto">
         <result column="username" property="username" jdbcType="VARCHAR"/>
         <result column="phone" property="phone" jdbcType="VARCHAR"/>
     </resultMap>

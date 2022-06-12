@@ -1,6 +1,5 @@
 package ices.fashion.service;
 
-import ices.fashion.entity.TBaseMaterial;
 import ices.fashion.service.dto.TestDto;
 
 import java.util.List;

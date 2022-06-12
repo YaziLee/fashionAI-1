@@ -1,8 +1,8 @@
 package ices.fashion.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import ices.fashion.entity.TBaseMaterial;
-import ices.fashion.mapper.TBaseMaterialMapper;
+import ices.fashion.entity.recommendation.TBaseMaterial;
+import ices.fashion.mapper.recommendation.TBaseMaterialMapper;
 import ices.fashion.service.TestService;
 import ices.fashion.service.dto.TestDto;
 import org.springframework.beans.factory.annotation.Autowired;

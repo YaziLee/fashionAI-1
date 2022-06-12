@@ -3,15 +3,11 @@ package ices.fashion.controller;
 import ices.fashion.constant.ApiResult;
 import ices.fashion.constant.ResultMessage;
 import ices.fashion.entity.AdminUser;
-import ices.fashion.entity.TBaseMaterial;
 import ices.fashion.service.AdminService;
-import ices.fashion.service.TestService;
-import ices.fashion.service.dto.TestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController

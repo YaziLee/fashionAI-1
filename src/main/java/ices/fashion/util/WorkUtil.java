@@ -1,8 +1,8 @@
 package ices.fashion.util;
 
 import ices.fashion.constant.WorkConst;
-import ices.fashion.entity.TWork;
-import ices.fashion.service.dto.ShowDto;
+import ices.fashion.entity.space.TWork;
+import ices.fashion.service.space.dto.ShowDto;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

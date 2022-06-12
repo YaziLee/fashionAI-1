@@ -1,6 +1,5 @@
 package ices.fashion.controller;
 
-import ices.fashion.entity.TBaseMaterial;
 import ices.fashion.service.TestService;
 import ices.fashion.service.dto.TestDto;
 import org.springframework.beans.factory.annotation.Autowired;
