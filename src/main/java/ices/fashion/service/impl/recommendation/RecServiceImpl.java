@@ -10,6 +10,7 @@ import ices.fashion.mapper.TBaseMaterialMapper;
 import ices.fashion.service.CategoryService;
 import ices.fashion.service.MaterialService;
 import ices.fashion.service.RecService;
+import ices.fashion.service.dto.MaterialPageDto;
 import ices.fashion.service.dto.RecCriteria;
 import ices.fashion.service.dto.RecDto;
 import ices.fashion.util.FileUtil;
@@ -39,23 +40,10 @@ public class RecServiceImpl implements RecService {
     private static final Logger LOGGER = LoggerFactory.getLogger(RecServiceImpl.class);
 
     @Override
-    public Map<Integer, String> selectRecCategoryMap() {
-        Map<Integer, String> recCategoryMap = new HashMap<>(2);
-        List<TBaseMaterialCategory> categories = categoryService.selectAllCategories();
-        for (TBaseMaterialCategory category: categories) {
-            if(category.getStatus() != 0 && ! category.getRecCategory().equals("invalid")) {
-                // 有效种类
-                recCategoryMap.put(category.getId(), category.getRecCategory());
-            }
-        }
-        return recCategoryMap;
-    }
-
-    @Override
     /**
      * 请求推荐
      */
-    public List<TBaseMaterial> reqRecommendations(List<Integer> itemIds, String matchType) throws IOException {
+    public List<MaterialPageDto> reqRecommendations(List<Integer> itemIds, String matchType) throws IOException {
         // 得到图片地址列表
         List<TBaseMaterial> materials = materialService.selectMaterialsByIds(itemIds);
         List<String> urlList = materials.stream().map(TBaseMaterial::getImgUrl).collect(Collectors.toList());
@@ -87,9 +75,7 @@ public class RecServiceImpl implements RecService {
 
             recUrls.add(recUrl);
         }
-        QueryWrapper<TBaseMaterial> tBaseMaterialQueryWrapper = new QueryWrapper<>();
-        tBaseMaterialQueryWrapper.in("img_url", recUrls);
-        return tBaseMaterialMapper.selectList(tBaseMaterialQueryWrapper);
+        return tBaseMaterialMapper.selectMaterialDtoByImgUrls(recUrls);
     }
 
 

@@ -11,6 +11,7 @@ import ices.fashion.entity.TBaseMaterialCategory;
 import ices.fashion.service.MaterialService;
 import ices.fashion.service.RecService;
 import ices.fashion.service.dto.MaterialPageCriteria;
+import ices.fashion.service.dto.MaterialPageDto;
 import ices.fashion.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,16 +41,8 @@ public class RecController {
         if (itemIds.size() != 3)
             return new ApiResult<>(ResultMessage.RESULT_ERROR_0);
         Map<String, Object> resultMap = new HashMap<>(2);
-        List<TBaseMaterial> recommendations = recService.reqRecommendations(itemIds, matchType);
+        List<MaterialPageDto> recommendations = recService.reqRecommendations(itemIds, matchType);
         resultMap.put("recommendations", recommendations);
-        return new ApiResult<>(ResultMessage.RESULT_SUCCESS_1, resultMap);
-    }
-
-    @GetMapping("get-rec-categories")
-    public ApiResult<Map<String, Object>> getRecCategories() {
-        Map<String, Object> resultMap = new HashMap<>(2);
-        Map<Integer, String> recCategoryMap = recService.selectRecCategoryMap();
-        resultMap.put("recCategoryMap", recCategoryMap);
         return new ApiResult<>(ResultMessage.RESULT_SUCCESS_1, resultMap);
     }
 }

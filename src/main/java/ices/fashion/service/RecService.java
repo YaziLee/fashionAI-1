@@ -6,6 +6,7 @@ import ices.fashion.entity.TBaseMaterial;
 import ices.fashion.entity.TBaseMaterialBrand;
 import ices.fashion.entity.TBaseMaterialCategory;
 import ices.fashion.service.dto.MaterialPageCriteria;
+import ices.fashion.service.dto.MaterialPageDto;
 import ices.fashion.service.dto.RecCriteria;
 import ices.fashion.service.dto.RecDto;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,7 +21,5 @@ public interface RecService {
     /**
      * 搭配推荐相关
      */
-    List<TBaseMaterial> reqRecommendations(List<Integer> itemIds, String matchType)throws IOException;
-
-    Map<Integer, String> selectRecCategoryMap();
+    List<MaterialPageDto> reqRecommendations(List<Integer> itemIds, String matchType)throws IOException;
 }

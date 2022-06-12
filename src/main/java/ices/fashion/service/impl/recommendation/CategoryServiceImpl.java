@@ -35,10 +35,8 @@ public class CategoryServiceImpl implements CategoryService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CategoryServiceImpl.class);
 
     @Override
-    public List<TBaseMaterialCategory> selectAllCategories() {
-        Map<String, Object> conditions = new HashMap<>();
-        conditions.put("status", 1);
-        return tBaseMaterialCategoryMapper.selectByMap(conditions);
+    public List<TBaseMaterialCategory> selectAllCategories(Integer status) {
+        return tBaseMaterialCategoryMapper.selectAllCategories(status);
     }
 
     @Override
@@ -48,5 +46,33 @@ public class CategoryServiceImpl implements CategoryService {
         conditions.put("rec_category", recType);
         return tBaseMaterialCategoryMapper.selectByMap(conditions);
     }
-
+    @Override
+    public ApiResult deleteCategories(List<Integer> ids) throws Exception {
+        Integer status = tBaseMaterialCategoryMapper.deleteCategories(ids);
+        if (status < 1)
+            throw new Exception();
+        return new ApiResult(ResultMessage.RESULT_SUCCESS_1);
+    }
+    @Override
+    public ApiResult recoverCategories(List<Integer> ids) throws Exception {
+        Integer status = tBaseMaterialCategoryMapper.recoverCategories(ids);
+        if (status < 1)
+            throw new Exception();
+        return new ApiResult(ResultMessage.RESULT_SUCCESS_1);
+    }
+    @Override
+    public Integer saveCategory (TBaseMaterialCategory tBaseMaterialCategory, MultipartFile multipartFile) {
+        String imgUrl = FileUtil.uploadMultipartFile(multipartFile);
+        tBaseMaterialCategory.setImgUrl(imgUrl);
+        if (tBaseMaterialCategory.getId() == null) {
+            tBaseMaterialCategoryMapper.insert(tBaseMaterialCategory);
+        } else {
+            tBaseMaterialCategoryMapper.updateById(tBaseMaterialCategory);
+        }
+        return tBaseMaterialCategory.getId();
+    }
+    @Override
+    public List<TBaseMaterialCategory> selectCategoryByIds(List<Integer> idList, Integer status){
+        return tBaseMaterialCategoryMapper.selectCategoryByIds(idList, status);
+    }
 }

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+<mapper namespace="ices.fashion.mapper.TBaseSuitMapper">
+    <resultMap id="BaseResultMap" type="ices.fashion.entity.TBaseSuit">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="customer_id" property="customerId" jdbcType="VARCHAR"/>
+        <result column="material_ids" property="materialIds" jdbcType="INTEGER"/>
+        <result column="img_url" property="imgUrl" jdbcType="VARCHAR"/>
+        <result column="canvas" property="canvas" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="audit_status" property="auditStatus" jdbcType="INTEGER"/>
+        <result column="audit_description" property="auditDescription" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="DECIMAL"/>
+        <result column="scan_count" property="scanCount" jdbcType="INTEGER"/>
+        <result column="collect_count" property="collectCount" jdbcType="INTEGER"/>
+        <result column="like_count" property="likeCount" jdbcType="INTEGER"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="SuitAdminPageResultMap" extends="BaseResultMap" type="ices.fashion.service.dto.SuitAdminPageDto">
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+    </resultMap>
+    <update id="auditSuits">
+        UPDATE t_base_suit
+        <set>
+            <if test="suitAuditCriteria.auditStatus != null">
+                `audit_status` = #{suitAuditCriteria.auditStatus},
+            </if>
+            <if test="suitAuditCriteria.auditDescription != null">
+                `audit_description` = #{suitAuditCriteria.auditDescription}
+            </if>
+        </set>
+        <where>
+            `id` = #{suitAuditCriteria.id}
+        </where>
+    </update>
+    <update id="deleteSuits">
+        UPDATE t_base_suit SET `status` = 0 WHERE id IN
+        <foreach collection="ids" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </update>
+    <update id="recoverSuits">
+        UPDATE t_base_suit SET `status` = 2 WHERE id IN
+        <foreach collection="ids" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </update>
+    <select id="selectSuitsAdminDtoByIds" resultMap="SuitAdminPageResultMap">
+        SELECT
+        s.id, s.name, s.customer_id, u.username, u.phone, s.material_ids,
+        s.img_url,s.canvas, s.status, s.audit_status, s.audit_description, s.price,
+        s.scan_count, s.collect_count, s.like_count, s.description
+        FROM t_base_suit s
+        LEFT JOIN col_user u ON s.customer_id = u.phone
+        <where>
+            <if test="status != null">
+                AND s.`status` = #{status}
+            </if>
+            <if test="ids.size() > 0">
+                AND s.`id` IN
+                <foreach collection="ids" item="idItem" open="(" separator="," close=")">
+                    #{idItem}
+                </foreach>
+            </if>
+            <if test="ids.size() == 0">
+                AND 1=0
+            </if>
+        </where>
+    </select>
+    <select id="selectSuitPage" resultMap="SuitAdminPageResultMap">
+        SELECT
+        s.id, s.name, s.customer_id, u.username, u.phone, s.material_ids,
+        s.img_url, s.canvas, s.status, s.audit_status, s.audit_description, s.price,
+        s.scan_count, s.collect_count, s.like_count, s.description
+        FROM t_base_suit s
+        LEFT JOIN col_user u ON s.customer_id = u.phone
+        <where>
+            <if test="suitPageCriteria.customerId != null">
+                AND s.`customer_id` = #{suitPageCriteria.customerId}
+            </if>
+            <choose>
+                <when test="suitPageCriteria.status != null and suitPageCriteria.status.size() > 0">
+                    AND s.`status` IN
+                    <foreach item="idItem" collection="suitPageCriteria.status" open="(" separator=","
+                             close=")">
+                        #{idItem}
+                    </foreach>
+                </when>
+                <when test="suitPageCriteria.status != null and suitPageCriteria.status.size() == 0">
+                    and 1=0
+                </when>
+            </choose>
+            <choose>
+                <when test="suitPageCriteria.auditStatus != null and suitPageCriteria.auditStatus.size() > 0">
+                    AND s.`audit_status` IN
+                    <foreach item="idItem" collection="suitPageCriteria.auditStatus" open="(" separator=","
+                             close=")">
+                        #{idItem}
+                    </foreach>
+                </when>
+                <when test="suitPageCriteria.auditStatus != null and suitPageCriteria.auditStatus.size() == 0">
+                    and 1=0
+                </when>
+            </choose>
+        </where>
+        ORDER BY s.`id`DESC
+    </select>
+    <delete id="deleteDraftsByIds">
+        DELETE FROM t_base_suit
+        <where>
+            customer_id = #{customerId}
+            AND id IN
+            <foreach collection="ids" open="(" close=")" item="id" separator=",">
+                #{id}
+            </foreach>
+        </where>
+    </delete>
+</mapper>

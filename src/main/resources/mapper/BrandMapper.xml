@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+<mapper namespace="ices.fashion.mapper.TBaseMaterialBrandMapper">
+    <resultMap id="BaseResultMap" type="ices.fashion.entity.TBaseMaterialBrand">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="img_url" property="imgUrl" jdbcType="VARCHAR"/>
+        <result column="brand_name" property="brandName" jdbcType="VARCHAR"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    <select id="selectAllBrands" resultMap="BaseResultMap">
+        SELECT
+        id, img_url, brand_name, description
+        FROM t_base_material_brand
+        <where>
+            <choose>
+                <when test="status != null">
+                    `status` = #{status}
+                </when>
+                <otherwise>
+                    `status` = 1
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+    <select id="selectBrandByIds" resultMap="BaseResultMap">
+        SELECT
+        id, img_url, brand_name, description
+        FROM t_base_material_brand
+        <where>
+            <if test="status != null">
+                `status` = #{status}
+            </if>
+            <if test="ids.size() > 0">
+                AND `id` IN
+                <foreach collection="ids" item="idItem" open="(" separator="," close=")">
+                    #{idItem}
+                </foreach>
+            </if>
+            <if test="ids.size() == 0">
+                AND 1=0
+            </if>
+        </where>
+    </select>
+    <update id="deleteBrands">
+        UPDATE t_base_material_brand SET `status` = 0 WHERE id IN
+        <foreach collection="ids" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </update>
+    <update id="recoverBrands">
+        UPDATE t_base_material_brand SET `status` = 1 WHERE id IN
+        <foreach collection="ids" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </update>
+</mapper>

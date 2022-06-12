@@ -3,6 +3,7 @@ package ices.fashion.service.impl.recommendation;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.qiniu.storage.Api;
 import ices.fashion.constant.ApiResult;
 import ices.fashion.constant.ResultMessage;
 import ices.fashion.entity.TBaseMaterial;
@@ -38,9 +39,46 @@ public class BrandServiceImpl implements BrandService {
 查询所有状态为1的品牌
  */
     @Override
-    public List<TBaseMaterialBrand> selectAllBrands() {
-        Map<String, Object> conditions = new HashMap<>();
-        conditions.put("status", 1);
-        return tBaseMaterialBrandMapper.selectByMap(conditions);
+    public List<TBaseMaterialBrand> selectAllBrands(Integer status) {
+        return tBaseMaterialBrandMapper.selectAllBrands(status);
+//        return tBaseMaterialBrandMapper.selectByMap(conditions);
     }
+    /*
+    根据id列表查询品牌
+     */
+    @Override
+    public List<TBaseMaterialBrand> selectBrandByIds(List<Integer> idList, Integer status){
+        return tBaseMaterialBrandMapper.selectBrandByIds(idList, status);
+    }
+    /*
+    根据id列表批量删除
+     */
+    public ApiResult deleteBrands(List<Integer> ids) throws Exception {
+        Integer status = tBaseMaterialBrandMapper.deleteBrands(ids);
+        if (status < 1)
+                throw  new Exception();
+        return new ApiResult(ResultMessage.RESULT_SUCCESS_1);
+    }
+    /*
+    根据id列表批量撤销删除
+     */
+    @Override
+    public ApiResult recoverBrands(List<Integer> ids) throws Exception {
+        Integer status = tBaseMaterialBrandMapper.recoverBrands(ids);
+        if (status < 1)
+            throw new Exception();
+        return new ApiResult(ResultMessage.RESULT_SUCCESS_1);
+    }
+    @Override
+    public Integer saveBrand (TBaseMaterialBrand tBaseMaterialBrand, MultipartFile multipartFile) {
+        String imgUrl = FileUtil.uploadMultipartFile(multipartFile);
+        tBaseMaterialBrand.setImgUrl(imgUrl);
+        if(tBaseMaterialBrand.getId() == null) {
+            // 新增
+            tBaseMaterialBrandMapper.insert(tBaseMaterialBrand);
+        } else {
+            // 更新
+            tBaseMaterialBrandMapper.updateById(tBaseMaterialBrand);
+        }return tBaseMaterialBrand.getId(); }
+
 }
