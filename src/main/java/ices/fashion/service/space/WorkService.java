@@ -1,6 +1,7 @@
 package ices.fashion.service.space;
 
 import ices.fashion.constant.ApiResult;
+import ices.fashion.entity.space.TLike;
 import ices.fashion.entity.space.TWork;
 import ices.fashion.service.space.dto.ShareWorkCriteria;
 import ices.fashion.service.space.dto.ShowDto;
@@ -19,4 +20,11 @@ public interface WorkService {
     public ApiResult<ShowDto> getAllShareWork();
 
     public ApiResult cancelOneWorkShare(Integer wid);
+
+    public ApiResult deleteOneWork(Integer wid);
+
+    public ApiResult saveOneLike(TLike like);
+
+    public ApiResult deleteOneLike(Integer id);
+
 }

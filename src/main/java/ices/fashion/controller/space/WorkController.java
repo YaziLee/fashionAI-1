@@ -3,6 +3,7 @@ package ices.fashion.controller.space;
 import ices.fashion.constant.ApiResult;
 import ices.fashion.constant.DataType;
 import ices.fashion.constant.ParamType;
+import ices.fashion.entity.space.TLike;
 import ices.fashion.entity.space.TWork;
 import ices.fashion.service.space.WorkService;
 import ices.fashion.service.space.dto.ShareWorkCriteria;
@@ -76,5 +77,29 @@ public class WorkController {
             dataType = DataType.INT, paramType = ParamType.PATH)
     public ApiResult cancelOneWorkShare(@PathVariable Integer wid) {
         return workService.cancelOneWorkShare(wid);
+    }
+
+    @DeleteMapping("/deleteOneWork/{wid}")
+    @ApiOperation(value = "用户删除自己的某个设计", notes = "")
+    @ApiImplicitParam(name = "wid", value = "作品对应id",
+            dataType = DataType.INT, paramType = ParamType.PATH)
+    public ApiResult deleteOneWork(@PathVariable Integer wid) {
+        return workService.deleteOneWork(wid);
+    }
+
+    @PostMapping("/saveOneLike")
+    @ApiOperation(value = "某用户点赞某个作品", notes = "wid和uid必须")
+    @ApiImplicitParam(name = "like", value = "点赞的用户id和作品id", dataType = "TLike",
+            required = true)
+    public ApiResult saveOneLike(TLike like) {
+        return workService.saveOneLike(like);
+    }
+
+    @DeleteMapping("/deleteOneLike/{lid}")
+    @ApiOperation(value = "用户删除某个点赞", notes = "")
+    @ApiImplicitParam(name = "lid", value = "点赞对应id",
+            dataType = DataType.INT, paramType = ParamType.PATH)
+    public ApiResult deleteOneLike(@PathVariable Integer lid) {
+        return workService.deleteOneLike(lid);
     }
 }

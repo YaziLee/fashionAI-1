@@ -26,8 +26,14 @@ public class WorkDetailDto {
     private String wordDescription;
     private List<TComment> commentList;
 
+    //是否收藏的相关信息
     private Integer isVisitorShared;
     private Integer shareId;
+    private Integer likeCnt; //点赞总数
+
+    //点赞相关信息
+    private Integer isVisitorLiked;
+    private Integer lid;
 
     public WorkDetailDto(TWork work) {
         this.id = work.getId();
