@@ -15,6 +15,7 @@ public class CommentController {
     ColCommentService colCommentService;
 
     @GetMapping("/getCommentbyVersion")
+
     public List<ColCommentDto> getCommentbyVersion(@RequestParam(value = "vid")int vid){
         return colCommentService.getCommentbyVersion(vid);
     }
