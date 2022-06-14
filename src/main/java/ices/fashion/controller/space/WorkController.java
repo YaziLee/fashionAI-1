@@ -91,7 +91,7 @@ public class WorkController {
     @ApiOperation(value = "某用户点赞某个作品", notes = "wid和uid必须")
     @ApiImplicitParam(name = "like", value = "点赞的用户id和作品id", dataType = "TLike",
             required = true)
-    public ApiResult saveOneLike(@RequestBody TLike like) {
+    public ApiResult<Integer> saveOneLike(@RequestBody TLike like) {
         return workService.saveOneLike(like);
     }
 

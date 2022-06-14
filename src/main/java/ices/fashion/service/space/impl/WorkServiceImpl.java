@@ -180,11 +180,15 @@ public class WorkServiceImpl implements WorkService {
     }
 
     @Override
-    public ApiResult saveOneLike(TLike like) {
+    public ApiResult<Integer> saveOneLike(TLike like) {
         if(likeMapper.insert(like) != 1) {
             return new ApiResult(800, "数据库更新失败");
         }
-        return new ApiResult(200, "success");
+        ApiResult<Integer> data =  new ApiResult(200, "success");
+        QueryWrapper<TLike> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("uid", like.getUid()).eq("deleted", 0).eq("wid", like.getWid());
+        data.setData(likeMapper.selectOne(queryWrapper).getId());
+        return data;
     }
 
     @Override

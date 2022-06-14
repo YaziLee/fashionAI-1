@@ -23,7 +23,7 @@ public interface WorkService {
 
     public ApiResult deleteOneWork(Integer wid);
 
-    public ApiResult saveOneLike(TLike like);
+    public ApiResult<Integer> saveOneLike(TLike like);
 
     public ApiResult deleteOneLike(Integer id);
 
