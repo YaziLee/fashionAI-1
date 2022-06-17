@@ -91,7 +91,6 @@ public class WorkServiceImpl implements WorkService {
         QueryWrapper<TLike> likeQueryWrapper = new QueryWrapper<>();
         likeQueryWrapper.eq("deleted", 0).eq("wid", wid).eq("uid", uid);
         TLike like = likeMapper.selectOne(likeQueryWrapper);
-        System.out.println(like);
         if (like == null) {
             data.setIsVisitorLiked(0);
             data.setLid(0);
