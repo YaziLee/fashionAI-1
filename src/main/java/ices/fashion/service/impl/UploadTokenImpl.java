@@ -2,6 +2,7 @@ package ices.fashion.service.impl;
 
 import com.qiniu.util.Auth;
 import com.qiniu.util.StringMap;
+import ices.fashion.constant.QiniuCloudConst;
 import ices.fashion.service.UploadTokenService;
 import org.springframework.stereotype.Service;
 
@@ -9,9 +10,9 @@ import org.springframework.stereotype.Service;
 public class UploadTokenImpl implements UploadTokenService {
     @Override
     public String getUploadToken(boolean forever){
-        String ACCESS_KEY = "afg3FFJacTTtaCxYJgG3fCYoE0iPCWrilEBnaE-A";
-        String SECRET_KEY = "V7ulJSTaF5q2j0DV1YfDWLzMHHUcmfPcIN-lGenE";
-        String BUCKET = "shoplook-img";
+        String ACCESS_KEY = QiniuCloudConst.ACCESS_KEY;
+        String SECRET_KEY = QiniuCloudConst.SECRET_KEY;
+        String BUCKET = QiniuCloudConst.BUCKET;
 
         Auth auth = Auth.create(ACCESS_KEY,SECRET_KEY);
         long expireSeconds = 7200; //上传凭证的有效时间

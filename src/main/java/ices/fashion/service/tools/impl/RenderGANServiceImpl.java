@@ -40,32 +40,17 @@ public class RenderGANServiceImpl implements RenderGANService {
         String sketchFileName = GANConst.RENDER_SKETCH_FILE_NAME_PREFIX
                 + originFileNameArray[originFileNameArray.length - 1];
         String sketchFinalUrl = FileUtil.concatUrl(sketchFileName);
-        File sketch = FileUtil.download(sketchFinalUrl, sketchFileName);
         String colorFileName = renderGANCriteria.getColorFileName();
         String colorFinalUrl = FileUtil.concatUrl(colorFileName);
-        File color = FileUtil.download(colorFinalUrl, colorFileName);
 
         //step2 图片转string并初始化并调用模型
-        renderGANCriteria.setSketch(FileUtil.pictureFileToBase64String(sketch));
-        renderGANCriteria.setColor(FileUtil.pictureFileToBase64String(color));
+        renderGANCriteria.setSketch(sketchFinalUrl);
+        renderGANCriteria.setColor(colorFinalUrl);
         renderGANCriteria.init();
         String fileName = doGenerate(renderGANCriteria);
 
-        boolean isSuccess = FileUtil.uploadFile2Cloud(fileName);
-
-        //step3 删除图片
-        File renderFile = new File(System.getProperty("user.dir") + File.separator + "img" + File.separator + fileName);
-        FileUtil.deleteFile(sketch, color, renderFile);
-
-        //step4 返回结果
-        if (!isSuccess) {
-            return new ApiResult(800, "七牛云上传换装后图像失败");
-        }
-        FileUtil.setExpireTime(fileName);
         ApiResult<RenderGANDto> res = new ApiResult(200, "success");
-        String fileUrl = QiniuCloudConst.DOMAIN_BUCKET + "/" + fileName;
-        res.setData(new RenderGANDto(fileUrl));
-        System.out.println(fileUrl);
+        res.setData(new RenderGANDto(fileName));
         return res;
     }
 
@@ -114,13 +99,10 @@ public class RenderGANServiceImpl implements RenderGANService {
         HttpEntity<String> httpEntity = new HttpEntity<>(content, headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(generateUrl, HttpMethod.POST, httpEntity, String.class);
 
-        String filename = "render_" + System.currentTimeMillis() + ".jpg";
         List<RenderGANModelDto> renderGANModelDtoList = gson.fromJson(responseEntity.getBody(),
                 new TypeToken<List<RenderGANModelDto>>(){}.getType());
 
-        byte[] base64decodedBytes = FileUtil.base64StringToBytes(renderGANModelDtoList.get(0).getImage());
-        FileUtil.createFile(filename, base64decodedBytes);
-        return filename;
+        return renderGANModelDtoList.get(0).getImage();
 
     }
 }

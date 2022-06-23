@@ -416,4 +416,23 @@ class FashionApplicationTests {
         TShare share = shareMapper.selectOne(shareQueryWrapper);
         System.out.println(share);
     }
+
+    @Test
+    void testMMC() throws IOException {
+        MMCGANCriteria mmcganCriteria = new MMCGANCriteria();
+        mmcganCriteria.setFileName("fashion/mmc-gan/jacket/fc81dde479776d6082eb30d3c75a5053.jpg");
+        mmcganCriteria.setTargetCategory("Clothing Jeans");
+        mmcganCriteria.setTargetText("Womens Fashion Clothing Jeans Black Skinny Jeans Trousers ");
+        System.out.println(mmcganService.doMMCGAN(mmcganCriteria).getData().fileUrl);
+    }
+
+    @Test
+    void testOutfit() throws IOException {
+        OutfitGANCriteria outfitGANCriteria = new OutfitGANCriteria();
+        outfitGANCriteria.setUpperFileName("fashion/outfit-gan/upper/13cb0fd8d0454a9dcc258c8d039bed54.jpg");
+        outfitGANCriteria.setLowerFileName("fashion/outfit-gan/lower/0a45edf011d699b7667ada914e1be34d.jpg");
+        outfitGANCriteria.setShoesFileName("fashion/outfit-gan/shoes/1eb68c4e0070698bb9832e0d75325b70.jpg");
+        outfitGANCriteria.setBagFileName("fashion/outfit-gan/bag/1b42dd87b1d9a91f170e42d37e0a5d9e.jpg");
+        System.out.println(outfitGANService.doOutfitGAN(outfitGANCriteria).getData());
+    }
 }
