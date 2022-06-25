@@ -16,7 +16,7 @@ public interface SuitService {
      * 搭配套装相关
      */
     // 更新套装记录（包括图片）或新增记录
-    ApiResult insertSuit(String name, String description, String materialIds, String customerId, BigDecimal price, Integer status, String canvas, MultipartFile multipartFile);
+    TBaseSuit insertSuit(String name, String description, String materialIds, String materialUrls, String customerId, BigDecimal price, Integer status, String canvas, MultipartFile multipartFile);
 
     // 更新套装记录文本信息和状态
     Integer updateSuit(TBaseSuit tBaseSuit);

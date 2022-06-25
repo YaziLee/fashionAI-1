@@ -5,7 +5,8 @@
         <id column="id" property="id" jdbcType="INTEGER"/>
         <result column="name" property="name" jdbcType="VARCHAR"/>
         <result column="customer_id" property="customerId" jdbcType="VARCHAR"/>
-        <result column="material_ids" property="materialIds" jdbcType="INTEGER"/>
+        <result column="material_ids" property="materialIds" jdbcType="VARCHAR"/>
+        <result column="material_urls" property="materialUrls" jdbcType="VARCHAR"/>
         <result column="img_url" property="imgUrl" jdbcType="VARCHAR"/>
         <result column="canvas" property="canvas" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
@@ -49,7 +50,7 @@
     </update>
     <select id="selectSuitsAdminDtoByIds" resultMap="SuitAdminPageResultMap">
         SELECT
-        s.id, s.name, s.customer_id, u.username, u.phone, s.material_ids,
+        s.id, s.name, s.customer_id, u.username, u.phone, s.material_ids, s.material_urls
         s.img_url,s.canvas, s.status, s.audit_status, s.audit_description, s.price,
         s.scan_count, s.collect_count, s.like_count, s.description
         FROM t_base_suit s
@@ -71,7 +72,7 @@
     </select>
     <select id="selectSuitPage" resultMap="SuitAdminPageResultMap">
         SELECT
-        s.id, s.name, s.customer_id, u.username, u.phone, s.material_ids,
+        s.id, s.name, s.customer_id, u.username, u.phone, s.material_ids, s.material_urls,
         s.img_url, s.canvas, s.status, s.audit_status, s.audit_description, s.price,
         s.scan_count, s.collect_count, s.like_count, s.description
         FROM t_base_suit s

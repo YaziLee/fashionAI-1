@@ -29,12 +29,13 @@ public class SuitServiceImpl implements SuitService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SuitServiceImpl.class);
 
     @Override
-    public ApiResult insertSuit(String name, String description, String materialIds, String customerId, BigDecimal price, Integer status, String canvas, MultipartFile multipartFile) {
+    public TBaseSuit insertSuit(String name, String description, String materialIds, String materialUrls, String customerId, BigDecimal price, Integer status, String canvas, MultipartFile multipartFile) {
         String imgUrl = FileUtil.uploadMultipartFile(multipartFile); // 上传图片
         TBaseSuit tBaseSuit = new TBaseSuit();
         tBaseSuit.setCustomerId(customerId);
         tBaseSuit.setName(name);
         tBaseSuit.setMaterialIds(materialIds);
+        tBaseSuit.setMaterialUrls(materialUrls);
         tBaseSuit.setImgUrl(imgUrl);
         tBaseSuit.setStatus(status);
         tBaseSuit.setAuditStatus(0);
@@ -42,7 +43,7 @@ public class SuitServiceImpl implements SuitService {
         tBaseSuit.setDescription(description);
         tBaseSuit.setCanvas(canvas);
         tBaseSuitMapper.insert(tBaseSuit);
-        return new ApiResult(ResultMessage.RESULT_SUCCESS_1);
+        return tBaseSuit;
     }
 
     @Override
