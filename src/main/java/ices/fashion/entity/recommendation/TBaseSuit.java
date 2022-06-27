@@ -18,6 +18,7 @@ public class TBaseSuit {
     private String name;
     private String customerId;
     private String materialIds;
+    private String materialUrls;
     private String imgUrl;
     private String canvas; // 画布信息
     private Integer status;// 0: 已删除，1：草稿，2：发布到个人空间，3：发布到广场
