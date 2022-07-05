@@ -62,6 +62,7 @@ public class OutfitGANServiceImpl implements OutfitGANService {
         outfitGANCriteria.setImage(upperFinalUrl);
 
         String shoesFinalUrl = null, lowerFinalUrl = null, bagFinalUrl = null;
+
         if (shoesFileName != null && !shoesFileName.isEmpty()) {
             shoesFinalUrl = FileUtil.concatUrl(shoesFileName);
         } else {
