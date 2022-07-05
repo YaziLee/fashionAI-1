@@ -56,41 +56,71 @@ public class OutfitGANServiceImpl implements OutfitGANService {
         String shoesFileName = outfitGANCriteria.getShoesFileName();
         String lowerFileName = outfitGANCriteria.getLowerFileName();
         String bagFileName = outfitGANCriteria.getBagFileName();
+        File shoes = null, lower = null, bag = null;
         outfitGANCriteria.init();
 
         String upperFinalUrl = FileUtil.concatUrl(upperFileName);
-        outfitGANCriteria.setImage(upperFinalUrl);
-
-        String shoesFinalUrl = null, lowerFinalUrl = null, bagFinalUrl = null;
+        File upper = FileUtil.download(upperFinalUrl, upperFileName);
+        outfitGANCriteria.setImage(FileUtil.pictureFileToBase64String(upper));
 
         if (shoesFileName != null && !shoesFileName.isEmpty()) {
-            shoesFinalUrl = FileUtil.concatUrl(shoesFileName);
-        } else {
-            shoesFinalUrl = getRandomMaskImage(GANConst.SHOES);
+            String shoesFinalUrl = FileUtil.concatUrl(shoesFileName);
+            shoes = FileUtil.download(shoesFinalUrl, shoesFileName);
         }
-        outfitGANCriteria.setMaskShoes(shoesFinalUrl);
+        if (shoes == null) {
+            shoes = getRandomMaskImage(GANConst.SHOES);
+        }
+        outfitGANCriteria.setMaskShoes(FileUtil.pictureFileToBase64String(shoes));
 
         if (lowerFileName != null && !lowerFileName.isEmpty()) {
-            lowerFinalUrl = FileUtil.concatUrl(lowerFileName);
-        } else {
-            lowerFinalUrl = getRandomMaskImage(GANConst.LOWER);
+            String lowerFinalUrl = FileUtil.concatUrl(lowerFileName);
+            lower = FileUtil.download(lowerFinalUrl, lowerFileName);
         }
-        outfitGANCriteria.setMaskLower(lowerFinalUrl);
+        if (lower == null) {
+            lower = getRandomMaskImage(GANConst.LOWER);
+        }
+        outfitGANCriteria.setMaskLower(FileUtil.pictureFileToBase64String(lower));
 
         if (bagFileName != null && !bagFileName.isEmpty()) {
-            bagFinalUrl = FileUtil.concatUrl(bagFileName);
-        } else {
-            bagFinalUrl = getRandomMaskImage(GANConst.BAG);
+            String bagFinalUrl = FileUtil.concatUrl(bagFileName);
+            bag = FileUtil.download(bagFinalUrl, bagFileName);
         }
-        outfitGANCriteria.setMaskBag(bagFinalUrl);
+        if (bag == null) {
+            bag = getRandomMaskImage(GANConst.BAG);
+        }
+        outfitGANCriteria.setMaskBag(FileUtil.pictureFileToBase64String(bag));
 
         //step2 调用模型
         OutfitGANModelDto outfitGANModelDto = doGenerate(outfitGANCriteria);
 
+        boolean isSuccess = FileUtil.uploadFile2Cloud(outfitGANModelDto.getBagFileName());
+        isSuccess = isSuccess & FileUtil.uploadFile2Cloud(outfitGANModelDto.getLowerFileName());
+        isSuccess = isSuccess & FileUtil.uploadFile2Cloud(outfitGANModelDto.getShoesFileName());
+
+        //step3 删除图片
+        File bagGenFile = new File(System.getProperty("user.dir") + File.separator + "img" + File.separator
+                + outfitGANModelDto.getBagFileName());
+        File lowerGenFile = new File(System.getProperty("user.dir") + File.separator + "img" + File.separator
+                + outfitGANModelDto.getLowerFileName());
+        File shoesGenFile = new File(System.getProperty("user.dir") + File.separator + "img" + File.separator
+                + outfitGANModelDto.getShoesFileName());
+        FileUtil.deleteFile(upper, bag, shoes, lower, bagGenFile, lowerGenFile, shoesGenFile);
+
+        //step4 返回结果
+        if (!isSuccess) {
+            return new ApiResult(800, "七牛云上传换装后图像失败");
+        }
+        FileUtil.setExpireTime(outfitGANModelDto.getBagFileName());
+        FileUtil.setExpireTime(outfitGANModelDto.getShoesFileName());
+        FileUtil.setExpireTime(outfitGANModelDto.getLowerFileName());
+
 
         ApiResult<OutfitGANDto> res = new ApiResult(200, "success");
-        res.setData(new OutfitGANDto(outfitGANModelDto.getBagFileName(), outfitGANModelDto.getShoesFileName(),
-                outfitGANModelDto.getLowerFileName()));
+        String bagGenUrl = QiniuCloudConst.DOMAIN_BUCKET + "/" + outfitGANModelDto.getBagFileName();
+        String lowerGenUrl = QiniuCloudConst.DOMAIN_BUCKET + "/" + outfitGANModelDto.getLowerFileName();
+        String shoesGenUrl = QiniuCloudConst.DOMAIN_BUCKET + "/" + outfitGANModelDto.getShoesFileName();
+        res.setData(new OutfitGANDto(bagGenUrl, shoesGenUrl, lowerGenUrl));
+        System.out.println(bagGenUrl + "\n" + lowerGenUrl + "\n" + shoesGenUrl);
         return res;
     }
 
@@ -127,10 +157,14 @@ public class OutfitGANServiceImpl implements OutfitGANService {
         headers.setAccept(mediaTypeList);
         Gson gson = new Gson();
         String content = '[' + gson.toJson(outfitGANCriteria) + ']';
-        System.out.println(content);
+//        System.out.println(content);
 
         HttpEntity<String> httpEntity = new HttpEntity<>(content, headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(generateUrl, HttpMethod.POST, httpEntity, String.class);
+
+        String bagFileName = "outfit_gan_bag_" + System.currentTimeMillis() + ".jpg";
+        String shoesFileName = "outfit_gan_shoes_" + System.currentTimeMillis() + ".jpg";
+        String lowerFileName = "outfit_gan_lower_" + System.currentTimeMillis() + ".jpg";
 
         List<OutfitGANModelDto> outfitGANModelDtoList = gson.fromJson(responseEntity.getBody(),
                 new TypeToken<List<OutfitGANModelDto>>(){}.getType());
@@ -138,16 +172,22 @@ public class OutfitGANServiceImpl implements OutfitGANService {
 //        System.out.println(responseEntity.getHeaders());
         OutfitGANModelDto resp = outfitGANModelDtoList.get(0);
 
-        resp.setBagFileName(resp.getImageBag());
-        resp.setShoesFileName(resp.getImageShoes());
-        resp.setLowerFileName(resp.getImageLower());
+        byte[] shoesBase64decodedBytes = FileUtil.base64StringToBytes(resp.getImageShoes());
+        byte[] lowerBase64decodedBytes = FileUtil.base64StringToBytes(resp.getImageLower());
+        byte[] bagBase64decodedBytes = FileUtil.base64StringToBytes(resp.getImageBag());
+        FileUtil.createFile(bagFileName, bagBase64decodedBytes);
+        FileUtil.createFile(shoesFileName, shoesBase64decodedBytes);
+        FileUtil.createFile(lowerFileName, lowerBase64decodedBytes);
+        resp.setBagFileName(bagFileName);
+        resp.setShoesFileName(shoesFileName);
+        resp.setLowerFileName(lowerFileName);
 
         return resp;
 
     }
 
     //无掩码图像后端随机给一个数据库中的
-    private String getRandomMaskImage(String category) throws UnsupportedEncodingException {
+    private File getRandomMaskImage(String category) throws UnsupportedEncodingException {
 
 
         String fileName = null;
@@ -168,6 +208,7 @@ public class OutfitGANServiceImpl implements OutfitGANService {
             TOutfitLower tOutfitLower = tOutfitLowerMapper.selectOne(tOutfitLowerQueryWrapper);
             fileName = tOutfitLower.getFileName();
         } else {}
-        return FileUtil.concatUrl(fileName);
+        String finalUrl = FileUtil.concatUrl(fileName);
+        return FileUtil.download(finalUrl, fileName);
     }
 }
